@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habit Streak Tracker — Girl Gone AI</title>
+  <style>
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    /* ============================================================
+       BRANDED HEADER
+       ============================================================ */
+    .site-header {
+      background: #2563eb;
+      color: #fff;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .site-header .brand {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .site-header .tagline {
+      font-size: 13px;
+      opacity: 0.82;
+      margin-left: auto;
+    }
+    .site-header .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #93c5fd;
+      margin-right: 10px;
+    }
+
+    /* ============================================================
+       HERO STRIP
+       ============================================================ */
+    .hero {
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 60%, #3b82f6 100%);
+      color: #fff;
+      padding: 40px 32px 36px;
+    }
+    .hero h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      font-size: 15px;
+      opacity: 0.88;
+      max-width: 620px;
+    }
+    .hero .meta {
+      margin-top: 18px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .hero .meta-item {
+      background: rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .page-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ============================================================
+       SECTION WRAPPERS
+       ============================================================ */
+    .section {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 32px;
+      overflow: hidden;
+      page-break-inside: avoid;
+    }
+    .section-header {
+      background: #f1f5f9;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.2px;
+    }
+    .section-header .sheet-badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      background: #e2e8f0;
+      border-radius: 4px;
+      padding: 2px 8px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .section-body {
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    /* ============================================================
+       SUMMARY STAT CARDS
+       ============================================================ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .stat-card .value {
+      font-size: 26px;
+      font-weight: 700;
+      color: #2563eb;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-card .label {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ============================================================
+       SHARED TABLE STYLES
+       ============================================================ */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      background: #1e40af;
+      color: #fff;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 10px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    tr:hover td { background: #eff6ff; }
+
+    /* ============================================================
+       STATUS BADGES
+       ============================================================ */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-streak-master { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .badge-on-fire       { background: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+    .badge-perfect       { background: #dcfce7; color: #14532d; border: 1px solid #4ade80; }
+    .badge-active        { background: #dbeafe; color: #1e3a8a; border: 1px solid #60a5fa; }
+    .badge-struggling    { background: #fee2e2; color: #7f1d1d; border: 1px solid #f87171; }
+    .badge-restart       { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
+    /* ============================================================
+       DAILY TRACKER GRID
+       ============================================================ */
+    .tracker-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tracker-table {
+      font-size: 11px;
+      min-width: 900px;
+    }
+    .tracker-table th {
+      padding: 6px 4px;
+      text-align: center;
+      font-size: 10px;
+    }
+    .tracker-table th.habit-col {
+      text-align: left;
+      min-width: 160px;
+      padding-left: 10px;
+    }
+    .tracker-table td {
+      text-align: center;
+      padding: 4px 3px;
+      font-size: 11px;
+      min-width: 22px;
+    }
+    .tracker-table td.habit-name {
+      text-align: left;
+      padding-left: 10px;
+      font-weight: 500;
+      white-space: nowrap;
+      color: #0f172a;
+    }
+    .cell-done {
+      background: #bbf7d0 !important;
+      color: #14532d;
+      font-weight: 700;
+      border-radius: 3px;
+    }
+    .cell-miss {
+      background: #f1f5f9 !important;
+      color: #cbd5e1;
+    }
+    .tracker-table td.stat-col {
+      background: #eff6ff;
+      font-weight: 600;
+      color: #1e40af;
+      white-space: nowrap;
+    }
+    .tracker-table .footer-row td {
+      background: #1e40af !important;
+      color: #fff;
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .tracker-table .pct-row td {
+      background: #dbeafe !important;
+      color: #1e3a8a;
+      font-weight: 600;
+      font-size: 11px;
+    }
+
+    /* ============================================================
+       CATEGORY HEADER ROWS (Habit Library)
+       ============================================================ */
+    .cat-header td {
+      background: #2563eb !important;
+      color: #fff !important;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      padding: 8px 10px;
+    }
+
+    /* ============================================================
+       DIFFICULTY PILLS
+       ============================================================ */
+    .diff-easy   { color: #14532d; background: #dcfce7; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+    .diff-medium { color: #713f12; background: #fef9c3; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+    .diff-hard   { color: #7f1d1d; background: #fee2e2; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+
+    /* ============================================================
+       STATUS KEY
+       ============================================================ */
+    .status-key {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .status-key-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-right: 4px;
+      flex-basis: 100%;
+    }
+
+    /* ============================================================
+       MILESTONE LOG SPECIAL COLUMN
+       ============================================================ */
+    .milestone-streak {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* ============================================================
+       YEAR AT A GLANCE
+       ============================================================ */
+    .yag-table th { background: #0f172a; }
+    .yag-table td.filled { font-weight: 600; color: #1e40af; }
+    .yag-table td.empty { color: #cbd5e1; }
+    .yag-table td.avg-col { background: #eff6ff; font-weight: 700; color: #2563eb; }
+
+    /* ============================================================
+       ROLLING AVG CARD
+       ============================================================ */
+    .rolling-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .rolling-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .rolling-item .r-label { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+    .rolling-item .r-value { font-size: 22px; font-weight: 700; color: #0f172a; }
+    .rolling-item .r-trend { font-size: 12px; color: #16a34a; margin-top: 2px; font-weight: 600; }
+
+    /* ============================================================
+       PRINT
+       ============================================================ */
+    @media print {
+      @page { size: A4 portrait; margin: 12mm 10mm; }
+      @page :first { margin-top: 8mm; }
+
+      body { background: #fff; font-size: 11px; }
+      .site-header, .hero { display: none !important; }
+      .page-wrapper { max-width: 100%; padding: 0; }
+      .section {
+        border: 1px solid #ccc;
+        border-radius: 0;
+        margin-bottom: 14px;
+        box-shadow: none;
+        page-break-inside: avoid;
+      }
+      .section-header { background: #f0f0f0; }
+      th { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cell-done { background: #bbf7d0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cat-header td { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      a { text-decoration: none; color: inherit; }
+    }
+
+    /* Landscape hint for the daily tracker section */
+    @media print {
+      .tracker-section { page-break-before: always; }
+      @page tracker { size: A4 landscape; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       BRANDED HEADER
+       ============================================================ -->
+  <header class="site-header">
+    <span class="dot"></span>
+    <span class="brand">Girl Gone AI</span>
+    <span class="tagline">Free Resource Library &nbsp;·&nbsp; Habit Streak Tracker</span>
+  </header>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <div class="hero">
+    <h1>Habit Streak Tracker</h1>
+    <p>A complete system for building and maintaining powerful daily habits — 20 tracked habits, a 30-day daily grid, weekly reviews, a monthly summary, milestone log, and a 50-habit inspiration library.</p>
+    <div class="meta">
+      <div class="meta-item">20 Habits Tracked</div>
+      <div class="meta-item">April 2026</div>
+      <div class="meta-item">6 Sheets</div>
+      <div class="meta-item">50-Habit Library</div>
+    </div>
+  </div>
+
+  <div class="page-wrapper">
+
+    <!-- ============================================================
+         SHEET 1 — HABIT DASHBOARD
+         ============================================================ -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Habit Dashboard</h2>
+        <span class="sheet-badge">Sheet 1</span>
+      </div>
+      <div class="section-body">
+
+        <!-- Summary stat cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="value">20</div>
+            <div class="label">Total Habits</div>
+          </div>
+          <div class="stat-card">
+            <div class="value">16</div>
+            <div class="label">Active Habits</div>
+          </div>
+          <div class="stat-card">
+            <div class="value">4</div>
+            <div class="label">Need Attention</div>
+          </div>
+          <div class="stat-card">
+            <div class="value">77%</div>
+            <div class="label">Avg Completion</div>
+          </div>
+          <div class="stat-card">
+            <div class="value">45</div>
+            <div class="label">Longest Active Streak</div>
+          </div>
+          <div class="stat-card">
+            <div class="value">45</div>
+            <div class="label">Best Streak Ever</div>
+          </div>
+          <div class="stat-card">
+            <div class="value">3</div>
+            <div class="label">Habits at 100%</div>
+          </div>
+        </div>
+
+        <!-- Dashboard table -->
+        <table>
+          <thead>
+            <tr>
+              <th style="width:28px;">#</th>
+              <th>Habit Name</th>
+              <th>Category</th>
+              <th>Frequency</th>
+              <th>Current Streak</th>
+              <th>Best Streak</th>
+              <th>Completion %</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td><td>Morning Meditation</td><td>Mental Health</td><td>Daily</td>
+              <td><strong>14</strong></td><td>22</td><td>87%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>10 minutes mindfulness</td>
+            </tr>
+            <tr>
+              <td>2</td><td>Exercise / Workout</td><td>Exercise</td><td>Daily</td>
+              <td><strong>7</strong></td><td>31</td><td>72%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>Any movement counts</td>
+            </tr>
+            <tr>
+              <td>3</td><td>Read 20 Pages</td><td>Learning</td><td>Daily</td>
+              <td><strong>21</strong></td><td>21</td><td>93%</td>
+              <td><span class="badge badge-on-fire">On Fire!</span></td>
+              <td>Physical or e-book</td>
+            </tr>
+            <tr>
+              <td>4</td><td>Drink 8 Glasses Water</td><td>Nutrition</td><td>Daily</td>
+              <td><strong>3</strong></td><td>45</td><td>68%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>Track with water bottle marks</td>
+            </tr>
+            <tr>
+              <td>5</td><td>No Phone First Hour</td><td>Morning Routine</td><td>Daily</td>
+              <td><strong>2</strong></td><td>14</td><td>55%</td>
+              <td><span class="badge badge-struggling">Struggling</span></td>
+              <td>Leave phone in other room</td>
+            </tr>
+            <tr>
+              <td>6</td><td>Weekly Meal Prep</td><td>Nutrition</td><td>Weekly</td>
+              <td><strong>3</strong></td><td>8</td><td>75%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>Sunday prep session</td>
+            </tr>
+            <tr>
+              <td>7</td><td>Call Family / Friend</td><td>Social</td><td>Weekly</td>
+              <td><strong>2</strong></td><td>12</td><td>80%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>Meaningful catch-up call</td>
+            </tr>
+            <tr>
+              <td>8</td><td>Journaling</td><td>Mental Health</td><td>Daily</td>
+              <td><strong>9</strong></td><td>18</td><td>81%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>5 minutes minimum</td>
+            </tr>
+            <tr>
+              <td>9</td><td>Learn Spanish (Duolingo)</td><td>Learning</td><td>Daily</td>
+              <td><strong>45</strong></td><td>45</td><td>96%</td>
+              <td><span class="badge badge-streak-master">Streak Master!</span></td>
+              <td>15 minutes daily</td>
+            </tr>
+            <tr>
+              <td>10</td><td>Savings Transfer</td><td>Financial</td><td>Weekly</td>
+              <td><strong>8</strong></td><td>8</td><td>100%</td>
+              <td><span class="badge badge-perfect">Perfect!</span></td>
+              <td>Auto-transfer on payday</td>
+            </tr>
+            <tr>
+              <td>11</td><td>Cold Shower</td><td>Morning Routine</td><td>Daily</td>
+              <td><strong>0</strong></td><td>6</td><td>40%</td>
+              <td><span class="badge badge-restart">Restart Needed</span></td>
+              <td>30 seconds minimum</td>
+            </tr>
+            <tr>
+              <td>12</td><td>Stretch / Yoga</td><td>Exercise</td><td>Daily</td>
+              <td><strong>5</strong></td><td>14</td><td>63%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>Morning or evening</td>
+            </tr>
+            <tr>
+              <td>13</td><td>No Alcohol</td><td>Wellness</td><td>Daily</td>
+              <td><strong>30</strong></td><td>30</td><td>100%</td>
+              <td><span class="badge badge-perfect">Perfect!</span></td>
+              <td>Sober challenge</td>
+            </tr>
+            <tr>
+              <td>14</td><td>Gratitude List</td><td>Mental Health</td><td>Daily</td>
+              <td><strong>12</strong></td><td>19</td><td>78%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>3 things each night</td>
+            </tr>
+            <tr>
+              <td>15</td><td>Deep Work Block</td><td>Productivity</td><td>Daily</td>
+              <td><strong>4</strong></td><td>11</td><td>69%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>2 hours focused work</td>
+            </tr>
+            <tr>
+              <td>16</td><td>Walk 10,000 Steps</td><td>Exercise</td><td>Daily</td>
+              <td><strong>6</strong></td><td>23</td><td>74%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>Use phone pedometer</td>
+            </tr>
+            <tr>
+              <td>17</td><td>Budget Review</td><td>Financial</td><td>Weekly</td>
+              <td><strong>5</strong></td><td>5</td><td>100%</td>
+              <td><span class="badge badge-perfect">Perfect!</span></td>
+              <td>Review transactions</td>
+            </tr>
+            <tr>
+              <td>18</td><td>Learn New Recipe</td><td>Learning</td><td>Weekly</td>
+              <td><strong>1</strong></td><td>4</td><td>60%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>Try one new dish weekly</td>
+            </tr>
+            <tr>
+              <td>19</td><td>Digital Sunset (No screens 9pm)</td><td>Wellness</td><td>Daily</td>
+              <td><strong>0</strong></td><td>8</td><td>35%</td>
+              <td><span class="badge badge-restart">Restart Needed</span></td>
+              <td>Winds down sleep</td>
+            </tr>
+            <tr>
+              <td>20</td><td>Floss / Oral Care</td><td>Morning Routine</td><td>Daily</td>
+              <td><strong>18</strong></td><td>18</td><td>91%</td>
+              <td><span class="badge badge-active">Active</span></td>
+              <td>After brushing</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Status key -->
+        <div class="status-key">
+          <span class="status-key-label">Status Key</span>
+          <span class="badge badge-streak-master">Streak Master! = 30+ day streak</span>
+          <span class="badge badge-on-fire">On Fire! = 14+ day streak</span>
+          <span class="badge badge-perfect">Perfect! = 100% completion rate</span>
+          <span class="badge badge-active">Active = tracking normally</span>
+          <span class="badge badge-struggling">Struggling = below 50% rate</span>
+          <span class="badge badge-restart">Restart Needed = current streak = 0</span>
+        </div>
+      </div>
+    </div><!-- /section -->
+
+
+    <!-- ============================================================
+         SHEET 2 — DAILY TRACKER
+         ============================================================ -->
+    <div class="section tracker-section">
+      <div class="section-header">
+        <h2>Daily Tracker — April 2026</h2>
+        <span class="sheet-badge">Sheet 2</span>
+      </div>
+      <div class="section-body">
+        <p style="font-size:12px;color:#64748b;margin-bottom:12px;">
+          Green cells = completed &nbsp;|&nbsp; Gray cells = missed &nbsp;|&nbsp; Numbers across the top are calendar days 1–30
+        </p>
+        <div class="tracker-wrapper">
+          <table class="tracker-table">
+            <thead>
+              <tr>
+                <th class="habit-col">Habit</th>
+                <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+                <th>11</th><th>12</th><th>13</th><th>14</th><th>15</th>
+                <th>16</th><th>17</th><th>18</th><th>19</th><th>20</th>
+                <th>21</th><th>22</th><th>23</th><th>24</th><th>25</th>
+                <th>26</th><th>27</th><th>28</th><th>29</th><th>30</th>
+                <th style="background:#1e3a8a;">Done</th>
+                <th style="background:#1e3a8a;">Poss.</th>
+                <th style="background:#1e3a8a;">Rate%</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- Helper macro: X = done, _ = miss -->
+              <!-- Row 1: Morning Meditation -->
+              <!-- X X X X X X X X X X X X X X _ X X X X X X X X X X X X X X _ = 28/30 -->
+              <tr>
+                <td class="habit-name">Morning Meditation</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">28</td><td class="stat-col">30</td><td class="stat-col">93%</td>
+              </tr>
+
+              <!-- Row 2: Exercise / Workout -->
+              <!-- X _ X X _ X X X _ X X _ X X X X _ X X X _ X X _ X X _ X X _ = 22/30 -->
+              <tr>
+                <td class="habit-name">Exercise / Workout</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">22</td><td class="stat-col">30</td><td class="stat-col">73%</td>
+              </tr>
+
+              <!-- Row 3: Read 20 Pages -->
+              <!-- X X X X X X X X X X X X X X X X X X X X X X X X X X X X X _ = 29/30 -->
+              <tr>
+                <td class="habit-name">Read 20 Pages</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">29</td><td class="stat-col">30</td><td class="stat-col">97%</td>
+              </tr>
+
+              <!-- Row 4: Drink 8 Glasses Water -->
+              <!-- X X _ X X X _ X X _ X X X _ X X X _ X X X _ X X _ X X _ X _ = 21/30 -->
+              <tr>
+                <td class="habit-name">Drink 8 Glasses Water</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">21</td><td class="stat-col">30</td><td class="stat-col">70%</td>
+              </tr>
+
+              <!-- Row 5: No Phone First Hour -->
+              <!-- _ X X _ X _ X X _ X _ X _ X X _ X _ X X _ X _ X X _ X _ X _ = 16/30 -->
+              <tr>
+                <td class="habit-name">No Phone First Hour</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">16</td><td class="stat-col">30</td><td class="stat-col">53%</td>
+              </tr>
+
+              <!-- Row 6: Weekly Meal Prep (weekly: days 7,14,21,28) -->
+              <tr>
+                <td class="habit-name">Weekly Meal Prep</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="stat-col">4</td><td class="stat-col">4</td><td class="stat-col">100%</td>
+              </tr>
+
+              <!-- Row 7: Call Family / Friend (weekly: days 6,11,17,22) -->
+              <tr>
+                <td class="habit-name">Call Family / Friend</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="stat-col">4</td><td class="stat-col">4</td><td class="stat-col">100%</td>
+              </tr>
+
+              <!-- Row 8: Journaling -->
+              <!-- X X X X _ X X X X _ X X X X _ X X X X X _ X X X X _ X X X _ = 25/30 -->
+              <tr>
+                <td class="habit-name">Journaling</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">25</td><td class="stat-col">30</td><td class="stat-col">83%</td>
+              </tr>
+
+              <!-- Row 9: Learn Spanish -->
+              <!-- X X X X X X X X X X X X X X X X X X X X X X X X X X X X X _ = 29/30 -->
+              <tr>
+                <td class="habit-name">Learn Spanish (Duolingo)</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">29</td><td class="stat-col">30</td><td class="stat-col">97%</td>
+              </tr>
+
+              <!-- Row 10: Savings Transfer (weekly: days 1,8,15,22,29) -->
+              <tr>
+                <td class="habit-name">Savings Transfer</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">5</td><td class="stat-col">5</td><td class="stat-col">100%</td>
+              </tr>
+
+              <!-- Row 11: Cold Shower -->
+              <!-- _ _ X _ X _ _ _ X _ _ _ X _ _ X _ _ _ X _ _ _ X _ _ _ _ _ _ = 8/30 -->
+              <tr>
+                <td class="habit-name">Cold Shower</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="stat-col">8</td><td class="stat-col">30</td><td class="stat-col">27%</td>
+              </tr>
+
+              <!-- Row 12: Stretch / Yoga -->
+              <!-- X X _ X X _ X X _ X X _ X X _ X X _ X X _ X X _ X X _ X X _ = 20/30 -->
+              <tr>
+                <td class="habit-name">Stretch / Yoga</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">20</td><td class="stat-col">30</td><td class="stat-col">67%</td>
+              </tr>
+
+              <!-- Row 13: No Alcohol -->
+              <!-- X X X X X X X X X X X X X X X X X X X X X X X X X X X X X _ = 29/30 -->
+              <tr>
+                <td class="habit-name">No Alcohol</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">29</td><td class="stat-col">30</td><td class="stat-col">97%</td>
+              </tr>
+
+              <!-- Row 14: Gratitude List -->
+              <!-- X X X X _ X X X X _ X X X X _ X X X X X _ X X X X _ X X X _ = 24/30 -->
+              <tr>
+                <td class="habit-name">Gratitude List</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">24</td><td class="stat-col">30</td><td class="stat-col">80%</td>
+              </tr>
+
+              <!-- Row 15: Deep Work Block -->
+              <!-- X _ X X X _ X X X _ X X X _ X X X _ X X X _ X X X _ X X X _ = 22/30 -->
+              <tr>
+                <td class="habit-name">Deep Work Block</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">22</td><td class="stat-col">30</td><td class="stat-col">73%</td>
+              </tr>
+
+              <!-- Row 16: Walk 10000 Steps -->
+              <!-- X X X _ X X _ X X X _ X X X _ X X X _ X X X _ X X X _ X X _ = 22/30 -->
+              <tr>
+                <td class="habit-name">Walk 10,000 Steps</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">22</td><td class="stat-col">30</td><td class="stat-col">73%</td>
+              </tr>
+
+              <!-- Row 17: Budget Review (weekly: days 7,14,21,28) -->
+              <tr>
+                <td class="habit-name">Budget Review</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="stat-col">4</td><td class="stat-col">4</td><td class="stat-col">100%</td>
+              </tr>
+
+              <!-- Row 18: Learn New Recipe (weekly: days 6,13,20,—) = 3/4 -->
+              <tr>
+                <td class="habit-name">Learn New Recipe</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="stat-col">3</td><td class="stat-col">4</td><td class="stat-col">75%</td>
+              </tr>
+
+              <!-- Row 19: Digital Sunset -->
+              <!-- _ _ X _ _ _ X _ _ _ _ X _ _ _ X _ _ _ _ X _ _ _ X _ _ _ _ _ = 6/30 -->
+              <tr>
+                <td class="habit-name">Digital Sunset (No screens 9pm)</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-miss">—</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td><td class="cell-miss">—</td>
+                <td class="stat-col">6</td><td class="stat-col">30</td><td class="stat-col">20%</td>
+              </tr>
+
+              <!-- Row 20: Floss / Oral Care -->
+              <!-- X X X X X X X X X X X X X X X X X X _ X X X X X X X X X X _ = 28/30 -->
+              <tr>
+                <td class="habit-name">Floss / Oral Care</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td>
+                <td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-done">X</td><td class="cell-miss">—</td>
+                <td class="stat-col">28</td><td class="stat-col">30</td><td class="stat-col">93%</td>
+              </tr>
+
+              <!-- Footer rows -->
+              <tr class="footer-row">
+                <td class="habit-name" style="color:#fff;font-weight:700;">Daily Completions</td>
+                <td>14</td><td>13</td><td>14</td><td>13</td><td>12</td>
+                <td>12</td><td>15</td><td>14</td><td>12</td><td>12</td>
+                <td>12</td><td>13</td><td>14</td><td>14</td><td>12</td>
+                <td>14</td><td>14</td><td>11</td><td>13</td><td>15</td>
+                <td>12</td><td>14</td><td>13</td><td>13</td><td>14</td>
+                <td>12</td><td>13</td><td>15</td><td>14</td><td>0</td>
+                <td colspan="3"></td>
+              </tr>
+              <tr class="pct-row">
+                <td class="habit-name" style="font-weight:700;color:#1e3a8a;">Daily % (of 20)</td>
+                <td>70%</td><td>65%</td><td>70%</td><td>65%</td><td>60%</td>
+                <td>60%</td><td>75%</td><td>70%</td><td>60%</td><td>60%</td>
+                <td>60%</td><td>65%</td><td>70%</td><td>70%</td><td>60%</td>
+                <td>70%</td><td>70%</td><td>55%</td><td>65%</td><td>75%</td>
+                <td>60%</td><td>70%</td><td>65%</td><td>65%</td><td>70%</td>
+                <td>60%</td><td>65%</td><td>75%</td><td>70%</td><td>—</td>
+                <td colspan="3"></td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div><!-- /tracker-wrapper -->
+      </div>
+    </div><!-- /section -->
+
+
+    <!-- ============================================================
+         SHEET 3 — WEEKLY REVIEW LOG
+         ============================================================ -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Weekly Review Log</h2>
+        <span class="sheet-badge">Sheet 3</span>
+      </div>
+      <div class="section-body">
+
+        <!-- Rolling avg cards -->
+        <div class="rolling-card">
+          <div class="rolling-item">
+            <div class="r-label">4-Week Rolling Avg</div>
+            <div class="r-value">87.0%</div>
+            <div class="r-trend">Improving</div>
+          </div>
+          <div class="rolling-item">
+            <div class="r-label">Month Completions</div>
+            <div class="r-value">381</div>
+            <div class="r-trend">vs. 480 possible</div>
+          </div>
+          <div class="rolling-item">
+            <div class="r-label">Month Average</div>
+            <div class="r-value">79.4%</div>
+            <div class="r-trend">Best month yet</div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Week</th>
+              <th>Date Range</th>
+              <th>Completed</th>
+              <th>Possible</th>
+              <th>Rate %</th>
+              <th>Top Habit</th>
+              <th>Most Missed</th>
+              <th>Reflection Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Week 1</strong></td>
+              <td>Mar 31 – Apr 6</td>
+              <td>82</td><td>120</td>
+              <td><strong>68%</strong></td>
+              <td>Learn Spanish</td>
+              <td>No Phone First Hour</td>
+              <td>Strong start. Spanish streak holding. Phone habit harder than expected.</td>
+            </tr>
+            <tr>
+              <td><strong>Week 2</strong></td>
+              <td>Apr 7 – Apr 13</td>
+              <td>88</td><td>120</td>
+              <td><strong>73%</strong></td>
+              <td>No Alcohol + Learn Spanish</td>
+              <td>Cold Shower</td>
+              <td>Second week feel. Sobriety feeling natural. Cold showers keep slipping.</td>
+            </tr>
+            <tr>
+              <td><strong>Week 3</strong></td>
+              <td>Apr 14 – Apr 20</td>
+              <td>91</td><td>120</td>
+              <td><strong>76%</strong></td>
+              <td>Read 20 Pages</td>
+              <td>Digital Sunset</td>
+              <td>Best week yet. Reading momentum is real. Need to set a phone alarm for screen off.</td>
+            </tr>
+            <tr>
+              <td><strong>Week 4</strong></td>
+              <td>Apr 21 – Apr 27</td>
+              <td>85</td><td>120</td>
+              <td><strong>71%</strong></td>
+              <td>Journaling</td>
+              <td>No Phone First Hour</td>
+              <td>Slight dip. Journaling becoming a real habit. Phone habit still weak.</td>
+            </tr>
+            <tr>
+              <td><strong>Week 5 (partial)</strong></td>
+              <td>Apr 28 – Apr 30</td>
+              <td>35</td><td>40</td>
+              <td><strong>88%</strong></td>
+              <td>—</td>
+              <td>—</td>
+              <td>Month wrapping up — final push.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:24px;">
+          <h3 style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.4px;">Weekly Habit Scoreboard</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Habit</th>
+                <th>Week 1</th>
+                <th>Week 2</th>
+                <th>Week 3</th>
+                <th>Week 4</th>
+                <th>Monthly Total</th>
+                <th>Best Week</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Morning Meditation</td><td>6</td><td>7</td><td>7</td><td>6</td><td>26</td><td>7</td></tr>
+              <tr><td>Exercise / Workout</td><td>5</td><td>4</td><td>6</td><td>5</td><td>20</td><td>6</td></tr>
+              <tr><td>Read 20 Pages</td><td>7</td><td>7</td><td>7</td><td>7</td><td>28</td><td>7</td></tr>
+              <tr><td>Drink 8 Glasses Water</td><td>5</td><td>5</td><td>6</td><td>5</td><td>21</td><td>6</td></tr>
+              <tr><td>No Phone First Hour</td><td>4</td><td>4</td><td>5</td><td>4</td><td>17</td><td>5</td></tr>
+              <tr><td>Journaling</td><td>5</td><td>6</td><td>7</td><td>7</td><td>25</td><td>7</td></tr>
+              <tr><td>Learn Spanish</td><td>7</td><td>7</td><td>7</td><td>7</td><td>28</td><td>7</td></tr>
+              <tr><td>No Alcohol</td><td>7</td><td>7</td><td>7</td><td>7</td><td>28</td><td>7</td></tr>
+              <tr><td>Gratitude List</td><td>5</td><td>6</td><td>7</td><td>6</td><td>24</td><td>7</td></tr>
+              <tr><td>Deep Work Block</td><td>5</td><td>5</td><td>6</td><td>6</td><td>22</td><td>6</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div><!-- /section -->
+
+
+    <!-- ============================================================
+         SHEET 4 — MONTHLY SUMMARY
+         ============================================================ -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Monthly Summary — All Months</h2>
+        <span class="sheet-badge">Sheet 4</span>
+      </div>
+      <div class="section-body">
+
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Completed</th>
+              <th>Possible</th>
+              <th>Rate %</th>
+              <th>New Added</th>
+              <th>Dropped</th>
+              <th>Milestones</th>
+              <th>Best Day</th>
+              <th>Top Habit</th>
+              <th>Most Improved</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>January 2026</strong></td>
+              <td>280</td><td>400</td><td><strong>70%</strong></td>
+              <td>5</td><td>0</td><td>2 (7-day streaks)</td><td>18/20</td>
+              <td>Morning Meditation</td><td>Exercise</td>
+              <td>Started the year with 5 core habits</td>
+            </tr>
+            <tr>
+              <td><strong>February 2026</strong></td>
+              <td>310</td><td>400</td><td><strong>77%</strong></td>
+              <td>3</td><td>0</td><td>1 (14-day streak on Meditation)</td><td>17/20</td>
+              <td>Learn Spanish</td><td>Journaling</td>
+              <td>Added Spanish and journaling</td>
+            </tr>
+            <tr>
+              <td><strong>March 2026</strong></td>
+              <td>340</td><td>560</td><td><strong>60%</strong></td>
+              <td>4</td><td>1</td><td>2 (Spanish 21-day + No Alcohol 7-day)</td><td>19/20</td>
+              <td>Learn Spanish</td><td>No Alcohol</td>
+              <td>Expanded to 12 habits — some strain</td>
+            </tr>
+            <tr style="background:#eff6ff;">
+              <td><strong>April 2026</strong></td>
+              <td>381</td><td>480</td><td><strong style="color:#16a34a;">79%</strong></td>
+              <td>1</td><td>0</td><td>3 (Spanish 45-day + No Alcohol 30-day + Reading 21-day)</td><td>20/20</td>
+              <td>Learn Spanish</td><td>Read 20 Pages</td>
+              <td>Best month yet — system is clicking</td>
+            </tr>
+            <tr style="color:#cbd5e1;">
+              <td>May 2026</td><td colspan="10" style="color:#cbd5e1;font-style:italic;">— not yet tracked —</td>
+            </tr>
+            <tr style="color:#cbd5e1;">
+              <td>June 2026</td><td colspan="10" style="color:#cbd5e1;font-style:italic;">— not yet tracked —</td>
+            </tr>
+            <tr style="color:#cbd5e1;">
+              <td>July 2026</td><td colspan="10" style="color:#cbd5e1;font-style:italic;">— not yet tracked —</td>
+            </tr>
+            <tr style="color:#cbd5e1;">
+              <td>August 2026</td><td colspan="10" style="color:#cbd5e1;font-style:italic;">— not yet tracked —</td>
+            </tr>
+            <tr style="color:#cbd5e1;">
+              <td>September 2026</td><td colspan="10" style="color:#cbd5e1;font-style:italic;">— not yet tracked —</td>
+            </tr>
+            <tr style="color:#cbd5e1;">
+              <td>October 2026</td><td colspan="10" style="color:#cbd5e1;font-style:italic;">— not yet tracked —</td>
+            </tr>
+            <tr style="color:#cbd5e1;">
+              <td>November 2026</td><td colspan="10" style="color:#cbd5e1;font-style:italic;">— not yet tracked —</td>
+            </tr>
+            <tr style="color:#cbd5e1;">
+              <td>December 2026</td><td colspan="10" style="color:#cbd5e1;font-style:italic;">— not yet tracked —</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Year-at-a-glance grid -->
+        <div style="margin-top:28px;">
+          <h3 style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.4px;">Year-at-a-Glance Grid</h3>
+          <table class="yag-table">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th>
+                <th>May</th><th>Jun</th><th>Jul</th><th>Aug</th>
+                <th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th>
+                <th>Annual Avg</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>2026</strong></td>
+                <td class="filled">70%</td>
+                <td class="filled">77%</td>
+                <td class="filled">60%</td>
+                <td class="filled" style="color:#16a34a;font-weight:700;">79%</td>
+                <td class="empty">—</td><td class="empty">—</td><td class="empty">—</td>
+                <td class="empty">—</td><td class="empty">—</td><td class="empty">—</td>
+                <td class="empty">—</td><td class="empty">—</td>
+                <td class="avg-col">71.5%</td>
+              </tr>
+              <tr>
+                <td><strong>2027</strong></td>
+                <td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td>
+                <td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td>
+                <td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td>
+                <td class="avg-col">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div><!-- /section -->
+
+
+    <!-- ============================================================
+         SHEET 4b — STREAK MILESTONES LOG
+         ============================================================ -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Streak Milestones Log</h2>
+        <span class="sheet-badge">Sheet 4b</span>
+      </div>
+      <div class="section-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Habit</th>
+              <th>Milestone</th>
+              <th>Streak</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2026-02-14</td>
+              <td>Morning Meditation</td>
+              <td>14-Day Streak</td>
+              <td><span class="milestone-streak">14 days</span></td>
+              <td>Valentine's Day — kept the streak</td>
+            </tr>
+            <tr>
+              <td>2026-03-15</td>
+              <td>Learn Spanish</td>
+              <td>21-Day Streak</td>
+              <td><span class="milestone-streak">21 days</span></td>
+              <td>Three weeks without missing!</td>
+            </tr>
+            <tr>
+              <td>2026-03-31</td>
+              <td>No Alcohol</td>
+              <td>30-Day Streak</td>
+              <td><span class="milestone-streak">30 days</span></td>
+              <td>Full month sober — huge milestone</td>
+            </tr>
+            <tr>
+              <td>2026-04-04</td>
+              <td>Learn Spanish</td>
+              <td>45-Day Streak</td>
+              <td><span class="milestone-streak">45 days</span></td>
+              <td>Personal record</td>
+            </tr>
+            <tr>
+              <td>2026-04-08</td>
+              <td>Read 20 Pages</td>
+              <td>21-Day Streak</td>
+              <td><span class="milestone-streak">21 days</span></td>
+              <td>Three straight weeks</td>
+            </tr>
+            <tr style="color:#94a3b8;font-style:italic;">
+              <td colspan="5" style="text-align:center;padding:12px;">Add new rows as you hit milestones!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /section -->
+
+
+    <!-- ============================================================
+         SHEET 5 — HABIT LIBRARY
+         ============================================================ -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Habit Library — 50 Popular Habits</h2>
+        <span class="sheet-badge">Sheet 5</span>
+      </div>
+      <div class="section-body">
+        <p style="font-size:12px;color:#64748b;margin-bottom:16px;">Organized by category with suggested frequency and difficulty. Use this as inspiration to build your own habit stack.</p>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:28px;">#</th>
+              <th>Habit</th>
+              <th>Frequency</th>
+              <th>Difficulty</th>
+              <th>Why It Works</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <!-- MORNING ROUTINE -->
+            <tr class="cat-header">
+              <td colspan="5">Morning Routine</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>Wake up at consistent time</td>
+              <td>Daily</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Anchors your circadian rhythm — everything downstream improves</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Make your bed</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Starts the day with a small win — primes your brain for follow-through</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>No phone for first 30–60 minutes</td>
+              <td>Daily</td>
+              <td><span class="diff-hard">Hard</span></td>
+              <td>Prevents reactive mode — your first hour sets the emotional tone for the day</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Drink a full glass of water on waking</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Rehydrates after sleep — improves alertness before caffeine</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Cold shower or face splash</td>
+              <td>Daily</td>
+              <td><span class="diff-hard">Hard</span></td>
+              <td>Activates the nervous system — builds mental toughness through daily discomfort</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>5-minute stretching or mobility</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Reduces morning stiffness — particularly important for desk workers</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Review your top 3 priorities for the day</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Ensures you start proactively rather than reactively</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>Sunlight exposure within first hour</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Regulates melatonin — dramatically improves sleep quality at night</td>
+            </tr>
+
+            <!-- EXERCISE -->
+            <tr class="cat-header">
+              <td colspan="5">Exercise</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>30-minute walk</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Lowest-barrier physical habit — improves mood, cardiovascular health, and creativity</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td>Strength training</td>
+              <td>3x per week</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Builds muscle mass — protects metabolic health as you age</td>
+            </tr>
+            <tr>
+              <td>11</td>
+              <td>Yoga or flexibility work</td>
+              <td>Daily or 3x week</td>
+              <td><span class="diff-easy">Easy–Med</span></td>
+              <td>Counteracts the damage of prolonged sitting — improves recovery from harder workouts</td>
+            </tr>
+            <tr>
+              <td>12</td>
+              <td>10,000 steps per day</td>
+              <td>Daily</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Active movement goal that works without a gym — track with any smartphone</td>
+            </tr>
+            <tr>
+              <td>13</td>
+              <td>Zone 2 cardio (easy effort)</td>
+              <td>3x per week</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>The most researched form of exercise for longevity — improves mitochondrial health</td>
+            </tr>
+            <tr>
+              <td>14</td>
+              <td>Weekly hike or outdoor activity</td>
+              <td>Weekly</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Combines exercise with nature exposure — powerful for mental health</td>
+            </tr>
+            <tr>
+              <td>15</td>
+              <td>Track workouts in a log</td>
+              <td>Each workout</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Athletes who log workouts improve faster — accountability creates consistency</td>
+            </tr>
+
+            <!-- NUTRITION -->
+            <tr class="cat-header">
+              <td colspan="5">Nutrition</td>
+            </tr>
+            <tr>
+              <td>16</td>
+              <td>Meal prep for the week</td>
+              <td>Weekly</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Removes decision fatigue — healthy eating becomes the path of least resistance</td>
+            </tr>
+            <tr>
+              <td>17</td>
+              <td>Eat a protein-rich breakfast</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy–Med</span></td>
+              <td>Protein at breakfast stabilizes blood sugar and reduces afternoon cravings</td>
+            </tr>
+            <tr>
+              <td>18</td>
+              <td>Cook at home (vs. ordering out)</td>
+              <td>5x per week</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Dramatically reduces calorie intake and food spending — home cooks eat 150–200 fewer calories per day on average</td>
+            </tr>
+            <tr>
+              <td>19</td>
+              <td>Eat vegetables with every meal</td>
+              <td>Daily</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Simple heuristic that crowds out processed food — no calorie counting required</td>
+            </tr>
+            <tr>
+              <td>20</td>
+              <td>Track food intake</td>
+              <td>Daily</td>
+              <td><span class="diff-hard">Hard</span></td>
+              <td>Awareness is the first step — even 3 days of tracking reveals patterns invisible to memory</td>
+            </tr>
+            <tr>
+              <td>21</td>
+              <td>No snacking after 8pm</td>
+              <td>Daily</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Extends overnight fast — reduces late-night empty calories</td>
+            </tr>
+            <tr>
+              <td>22</td>
+              <td>Drink 8 glasses of water</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Most people are chronically mildly dehydrated — affects focus, mood, and energy</td>
+            </tr>
+
+            <!-- MENTAL HEALTH -->
+            <tr class="cat-header">
+              <td colspan="5">Mental Health</td>
+            </tr>
+            <tr>
+              <td>23</td>
+              <td>10-minute mindfulness meditation</td>
+              <td>Daily</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Reduces cortisol levels — changes gray matter density with consistent practice over 8 weeks</td>
+            </tr>
+            <tr>
+              <td>24</td>
+              <td>Journaling (brain dump or structured)</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy–Med</span></td>
+              <td>Externalizes rumination — writing about problems reduces their emotional charge</td>
+            </tr>
+            <tr>
+              <td>25</td>
+              <td>Gratitude list (3 things)</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Rewires attentional bias toward positive — measurable improvement in wellbeing within 2 weeks</td>
+            </tr>
+            <tr>
+              <td>26</td>
+              <td>Therapy or coaching session</td>
+              <td>Weekly or biweekly</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Professional support for processing and growth — normalized by high performers</td>
+            </tr>
+            <tr>
+              <td>27</td>
+              <td>Digital detox (1 hour screen-free)</td>
+              <td>Daily</td>
+              <td><span class="diff-hard">Hard</span></td>
+              <td>Reduces anxiety and comparison — restores attention span damaged by constant stimulation</td>
+            </tr>
+            <tr>
+              <td>28</td>
+              <td>Nature walk or time outside</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Even 20 minutes in nature reduces cortisol — improves mood and creative thinking</td>
+            </tr>
+            <tr>
+              <td>29</td>
+              <td>Breathwork (box breathing or 4-7-8)</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Activates parasympathetic nervous system in under 5 minutes — immediate stress reduction</td>
+            </tr>
+
+            <!-- PRODUCTIVITY -->
+            <tr class="cat-header">
+              <td colspan="5">Productivity</td>
+            </tr>
+            <tr>
+              <td>30</td>
+              <td>Deep work block (2+ hours focused work)</td>
+              <td>Daily</td>
+              <td><span class="diff-hard">Hard</span></td>
+              <td>Cognitively demanding work done in distraction-free blocks produces 4x output of scattered work</td>
+            </tr>
+            <tr>
+              <td>31</td>
+              <td>Weekly review (review goals and tasks)</td>
+              <td>Weekly</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Identifies what matters vs. what's merely urgent — prevents drift from long-term priorities</td>
+            </tr>
+            <tr>
+              <td>32</td>
+              <td>End-of-day shutdown ritual</td>
+              <td>Daily</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Creates a clear boundary between work and rest — reduces work-related rumination at night</td>
+            </tr>
+            <tr>
+              <td>33</td>
+              <td>Single-tasking (one task at a time)</td>
+              <td>Daily</td>
+              <td><span class="diff-hard">Hard</span></td>
+              <td>Multitasking reduces performance on both tasks by up to 40% — focus is the highest-leverage skill</td>
+            </tr>
+            <tr>
+              <td>34</td>
+              <td>Inbox zero or email batching</td>
+              <td>Daily or 2x day</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Reduces cognitive overhead of a cluttered inbox — creates predictable times for communication</td>
+            </tr>
+            <tr>
+              <td>35</td>
+              <td>Write your top 3 MITs (Most Important Tasks)</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Ensures high-priority work gets done before the day fills with reactive tasks</td>
+            </tr>
+
+            <!-- LEARNING -->
+            <tr class="cat-header">
+              <td colspan="5">Learning</td>
+            </tr>
+            <tr>
+              <td>36</td>
+              <td>Read 20 pages of a book</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy–Med</span></td>
+              <td>20 pages per day = 12–15 books per year — the most reliable way to become widely read</td>
+            </tr>
+            <tr>
+              <td>37</td>
+              <td>Learn a language (Duolingo or lessons)</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy–Med</span></td>
+              <td>Language learning is the most cognitively demanding skill — daily practice beats long infrequent sessions</td>
+            </tr>
+            <tr>
+              <td>38</td>
+              <td>Listen to educational podcast or audiobook</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Converts commute and chore time into learning — 30-min commute = 1 book per month</td>
+            </tr>
+            <tr>
+              <td>39</td>
+              <td>Take an online course</td>
+              <td>Weekly (1 module)</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Structured learning with accountability — pairs well with a specific skill goal</td>
+            </tr>
+            <tr>
+              <td>40</td>
+              <td>Teach or explain something you learned</td>
+              <td>Weekly</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>The protege effect: teaching reveals gaps in your own understanding — accelerates mastery</td>
+            </tr>
+            <tr>
+              <td>41</td>
+              <td>Practice a musical instrument</td>
+              <td>Daily</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Activates more areas of the brain simultaneously than any other activity — protects cognitive function with age</td>
+            </tr>
+
+            <!-- SOCIAL -->
+            <tr class="cat-header">
+              <td colspan="5">Social</td>
+            </tr>
+            <tr>
+              <td>42</td>
+              <td>Call or text a friend or family member</td>
+              <td>Daily or weekly</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Relationships are the #1 predictor of happiness and longevity — they require maintenance to stay strong</td>
+            </tr>
+            <tr>
+              <td>43</td>
+              <td>Send one genuine compliment or thank-you</td>
+              <td>Daily</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Strengthens relationships — the giver benefits as much as the receiver</td>
+            </tr>
+            <tr>
+              <td>44</td>
+              <td>Schedule one social activity per week</td>
+              <td>Weekly</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>Social isolation accelerates cognitive decline — proactive scheduling beats hoping it happens organically</td>
+            </tr>
+            <tr>
+              <td>45</td>
+              <td>Do something for someone else (small act)</td>
+              <td>Weekly</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Prosocial behavior is one of the most reliable predictors of happiness</td>
+            </tr>
+
+            <!-- FINANCIAL -->
+            <tr class="cat-header">
+              <td colspan="5">Financial</td>
+            </tr>
+            <tr>
+              <td>46</td>
+              <td>Track every transaction</td>
+              <td>Daily</td>
+              <td><span class="diff-medium">Medium</span></td>
+              <td>What gets measured gets managed — financial awareness is the foundation of all other money habits</td>
+            </tr>
+            <tr>
+              <td>47</td>
+              <td>Automated savings transfer on payday</td>
+              <td>Each paycheck</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Pay yourself first — removing friction makes saving the default behavior</td>
+            </tr>
+            <tr>
+              <td>48</td>
+              <td>Weekly budget review (15 minutes)</td>
+              <td>Weekly</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Catches overspending early — prevents end-of-month surprise deficits</td>
+            </tr>
+            <tr>
+              <td>49</td>
+              <td>Read one article about personal finance</td>
+              <td>Weekly</td>
+              <td><span class="diff-easy">Easy</span></td>
+              <td>Financial literacy compounds — small consistent learning closes large knowledge gaps over time</td>
+            </tr>
+            <tr>
+              <td>50</td>
+              <td>No-spend day (or weekend)</td>
+              <td>Weekly</td>
+              <td><span class="diff-easy">Easy–Med</span></td>
+              <td>Breaks automatic spending habits — forces creativity and reveals what you actually value vs. habitual purchases</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /section -->
+
+    <!-- Footer -->
+    <div style="text-align:center;padding:24px 0 8px;color:#94a3b8;font-size:12px;border-top:1px solid #e2e8f0;margin-top:8px;">
+      <strong style="color:#2563eb;">Girl Gone AI</strong> &nbsp;·&nbsp; Free Resource Library &nbsp;·&nbsp; girlgoneai.com
+    </div>
+
+  </div><!-- /page-wrapper -->
+
+</body>
+</html>

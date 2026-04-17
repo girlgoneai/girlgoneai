@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factory 1 Dashboard — Girl Gone AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="dashboard-styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <h1>Factory 1</h1>
+      <span class="subtitle">Girl Gone AI &mdash; Digital Product Factory</span>
+    </div>
+    <div class="header-right">
+      <span class="catalog-count" id="catalog-count">140 products in catalog</span>
+      <span class="status-badge" id="data-status">PRE-LAUNCH</span>
+      <span class="last-updated" id="last-updated">&mdash;</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Row 1: KPI Cards -->
+    <section class="kpi-row">
+      <div class="kpi-card">
+        <span class="kpi-label">Today's Revenue</span>
+        <span class="kpi-value" id="kpi-revenue-today">$0</span>
+        <span class="kpi-delta neutral" id="kpi-revenue-today-delta">&mdash;</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">This Week</span>
+        <span class="kpi-value" id="kpi-revenue-week">$0</span>
+        <span class="kpi-delta neutral" id="kpi-revenue-week-delta">&mdash;</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">This Month</span>
+        <span class="kpi-value" id="kpi-revenue-month">$0</span>
+        <span class="kpi-delta neutral" id="kpi-revenue-month-delta">&mdash;</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Blended ROAS</span>
+        <span class="kpi-value" id="kpi-roas">0.0x</span>
+        <span class="kpi-delta neutral" id="kpi-roas-delta">&mdash;</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Gross Margin</span>
+        <span class="kpi-value" id="kpi-margin">0%</span>
+        <span class="kpi-delta neutral" id="kpi-margin-delta">&mdash;</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Seed Capital</span>
+        <span class="kpi-value" id="kpi-seed">$25,000</span>
+        <span class="kpi-sub" id="kpi-seed-balance">Balance: $24,749</span>
+      </div>
+    </section>
+
+    <!-- Row 2: Revenue Chart + Top Products -->
+    <section class="panel-row">
+      <div class="panel wide">
+        <h2>Revenue</h2>
+        <div class="chart-container">
+          <canvas id="revenue-chart"></canvas>
+        </div>
+        <p class="panel-empty-msg" id="revenue-empty">Storefront not yet live. Revenue tracking begins when first sale is recorded.</p>
+      </div>
+      <div class="panel narrow">
+        <h2>Top Products</h2>
+        <table class="product-table" id="top-products-table">
+          <thead>
+            <tr><th>Product</th><th>Sales</th><th>Revenue</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="panel-empty-msg" id="products-empty">Awaiting storefront launch to track sales.</p>
+      </div>
+    </section>
+
+    <!-- Row 3: Revenue by Category + ROAS by Platform -->
+    <section class="panel-row">
+      <div class="panel">
+        <h2>Revenue by Category</h2>
+        <table class="category-table" id="category-table">
+          <thead>
+            <tr><th>Category</th><th>Products</th><th>Revenue</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h2>Ad ROAS by Platform</h2>
+        <div class="chart-container">
+          <canvas id="roas-chart"></canvas>
+        </div>
+        <p class="panel-empty-msg" id="roas-empty">Ad accounts not yet provisioned. Waiting for board approval.</p>
+      </div>
+    </section>
+
+    <!-- Row 4: Cash Flow -->
+    <section class="panel-row single">
+      <div class="panel">
+        <h2>Cash Flow</h2>
+        <div class="chart-container">
+          <canvas id="cashflow-chart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Row 5: Milestone + Payouts + Reinvestment -->
+    <section class="panel-row three-col">
+      <div class="panel">
+        <h2>25% ROI Milestone</h2>
+        <div class="milestone-container">
+          <div class="progress-ring-wrapper">
+            <canvas id="milestone-ring" width="180" height="180"></canvas>
+            <span class="progress-center" id="milestone-pct">0%</span>
+          </div>
+          <div class="milestone-details">
+            <div class="detail-row">
+              <span class="detail-label">Deployed Capital</span>
+              <span class="detail-value" id="milestone-deployed">$25,000</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Cumulative Net Profit</span>
+              <span class="detail-value" id="milestone-profit">$0</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Target</span>
+              <span class="detail-value" id="milestone-target">$6,250</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Owner Payouts (15%)</h2>
+        <div class="payout-container">
+          <div class="payout-total">
+            <span class="payout-label">Total Paid Out</span>
+            <span class="payout-value" id="payout-total">$0</span>
+          </div>
+          <table class="payout-table" id="payout-table">
+            <thead>
+              <tr><th>Month</th><th>Net Profit</th><th>Payout</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Reinvestment (85%)</h2>
+        <div class="reinvest-container">
+          <div class="reinvest-total">
+            <span class="reinvest-label">Total Reinvested</span>
+            <span class="reinvest-value" id="reinvest-total">$0</span>
+          </div>
+          <div class="chart-container small">
+            <canvas id="reinvest-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Row 6: Jaci Task Completion Log -->
+    <section class="panel-row single">
+      <div class="panel">
+        <h2>Jaci Task Completion Log</h2>
+        <div class="jaci-header">
+          <div class="jaci-stat">
+            <span class="jaci-stat-label">Completed</span>
+            <span class="jaci-stat-value" id="jaci-completed">0</span>
+          </div>
+          <div class="jaci-stat">
+            <span class="jaci-stat-label">Total Assigned</span>
+            <span class="jaci-stat-value" id="jaci-total">0</span>
+          </div>
+          <div class="jaci-stat">
+            <span class="jaci-stat-label">Max Daily Hours</span>
+            <span class="jaci-stat-value">6h</span>
+          </div>
+        </div>
+        <table class="jaci-table" id="jaci-table">
+          <thead>
+            <tr><th>Date</th><th>Task</th><th>Status</th><th>Hours</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="panel-empty-msg" id="jaci-empty">No tasks assigned yet. Jaci's daily task workflow begins after onboarding.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Factory 1 Dashboard v2.0 &mdash; Girl Gone AI</span>
+    <span id="connection-status">Pre-launch &mdash; using seed data</span>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

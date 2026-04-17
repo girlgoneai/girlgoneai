@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meal Prep & Recipe Planner — Girl Gone AI</title>
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    /* ─── Brand Header ─── */
+    .brand-header {
+      background: #2563eb;
+      color: #fff;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(37,99,235,0.18);
+    }
+    .brand-header .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-header .logo-icon {
+      width: 34px;
+      height: 34px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .brand-header .tagline {
+      font-size: 0.78rem;
+      opacity: 0.82;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ─── Page Wrapper ─── */
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+      border: 1px solid #bfdbfe;
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1e3a8a;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+    .hero .subtitle {
+      font-size: 1.05rem;
+      color: #475569;
+      max-width: 560px;
+      margin: 0 auto 20px;
+    }
+    .hero .meta-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .hero .meta-chip {
+      background: #2563eb;
+      color: #fff;
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    /* ─── Section Headers ─── */
+    .section-label {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #2563eb;
+      background: #eff6ff;
+      border-radius: 4px;
+      padding: 3px 10px;
+      margin-bottom: 10px;
+    }
+    h2.section-title {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.025em;
+      margin-bottom: 6px;
+    }
+    h3.db-title {
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+    }
+    .db-purpose {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 18px;
+    }
+
+    /* ─── Divider ─── */
+    .divider {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 44px 0;
+    }
+
+    /* ─── Database Cards ─── */
+    .db-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 28px 30px;
+      margin-bottom: 28px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .db-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .db-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .db-icon.blue  { background: #eff6ff; }
+    .db-icon.green { background: #f0fdf4; }
+    .db-icon.amber { background: #fffbeb; }
+
+    /* ─── Property Tables ─── */
+    .prop-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.855rem;
+      margin-bottom: 22px;
+    }
+    .prop-table thead tr {
+      background: #f1f5f9;
+    }
+    .prop-table th {
+      text-align: left;
+      padding: 9px 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #64748b;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .prop-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .prop-table tr:last-child td { border-bottom: none; }
+    .prop-table tr:hover td { background: #fafbfc; }
+    .prop-name { font-weight: 600; color: #0f172a; white-space: nowrap; }
+    .prop-type {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #475569;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .prop-formula {
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+      font-size: 0.78rem;
+      background: #f8fafc;
+      color: #2563eb;
+      border: 1px solid #dbeafe;
+      border-radius: 5px;
+      padding: 2px 7px;
+      display: inline-block;
+      word-break: break-all;
+    }
+    .prop-notes { color: #475569; font-size: 0.84rem; }
+
+    /* ─── Views ─── */
+    .views-section { margin-top: 4px; }
+    .views-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-bottom: 10px;
+    }
+    .views-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .view-pill {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 4px 13px;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+    .view-pill.active {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+    }
+
+    /* ─── Nutrition Targets Table ─── */
+    .nutrition-card {
+      background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-top: 20px;
+    }
+    .nutrition-card h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #166534;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 14px;
+    }
+    .nutrition-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .nutrient-box {
+      text-align: center;
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px 8px;
+      border: 1px solid #d1fae5;
+    }
+    .nutrient-box .n-value {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #059669;
+      display: block;
+      line-height: 1.1;
+      margin-bottom: 3px;
+    }
+    .nutrient-box .n-label {
+      font-size: 0.7rem;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .nutrient-box .n-note {
+      font-size: 0.68rem;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+
+    /* ─── Dashboard Mockup ─── */
+    .dashboard-mockup {
+      background: #fff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+      font-size: 0.83rem;
+    }
+    .dash-topbar {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 13px 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dash-topbar .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-red   { background: #f87171; }
+    .dot-amber { background: #fbbf24; }
+    .dot-green { background: #34d399; }
+    .dash-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .dash-stat {
+      padding: 14px 16px;
+      border-right: 1px solid #e2e8f0;
+      text-align: center;
+    }
+    .dash-stat:last-child { border-right: none; }
+    .dash-stat .stat-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #2563eb;
+      display: block;
+      line-height: 1.1;
+    }
+    .dash-stat .stat-label {
+      font-size: 0.72rem;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+    .dash-section {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 14px 20px;
+    }
+    .dash-section:last-child { border-bottom: none; }
+    .dash-section-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    .dash-linked-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      background: #eff6ff;
+      color: #2563eb;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+    .meal-row {
+      display: grid;
+      grid-template-columns: 34px 1fr 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 4px;
+      align-items: baseline;
+    }
+    .meal-day {
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: #475569;
+    }
+    .meal-cell {
+      font-size: 0.78rem;
+      color: #1e293b;
+      padding: 2px 6px;
+      background: #f8fafc;
+      border-radius: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meal-cell.breakfast { background: #fef9c3; color: #854d0e; }
+    .meal-cell.lunch     { background: #dcfce7; color: #166534; }
+    .meal-cell.dinner    { background: #ede9fe; color: #5b21b6; }
+    .dash-row {
+      font-size: 0.83rem;
+      color: #374151;
+      padding: 3px 0;
+    }
+    .dash-row strong { color: #1e293b; }
+    .dash-nutrition-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .dash-nut-pill {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #166534;
+    }
+
+    /* ─── Recipe Cards ─── */
+    .recipes-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .recipe-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.04);
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .recipe-header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: #fff;
+      padding: 18px 22px 16px;
+    }
+    .recipe-number {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+    .recipe-title {
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+    .recipe-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .recipe-meta-item {
+      background: rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 6px 10px;
+      text-align: center;
+    }
+    .recipe-meta-item .rm-value {
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: block;
+      line-height: 1.1;
+    }
+    .recipe-meta-item .rm-label {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.75;
+    }
+    .recipe-info-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .recipe-info-badge {
+      background: rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 3px 11px;
+      font-size: 0.74rem;
+      font-weight: 500;
+    }
+    .recipe-body {
+      padding: 18px 22px;
+    }
+    .recipe-tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .dietary-badge {
+      border-radius: 999px;
+      padding: 3px 11px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .badge-green     { background: #dcfce7; color: #166534; }
+    .badge-blue      { background: #dbeafe; color: #1d4ed8; }
+    .badge-purple    { background: #ede9fe; color: #6d28d9; }
+    .badge-amber     { background: #fef3c7; color: #92400e; }
+    .badge-red       { background: #fee2e2; color: #991b1b; }
+    .badge-teal      { background: #ccfbf1; color: #0f766e; }
+    .badge-slate     { background: #f1f5f9; color: #475569; }
+    .badge-pink      { background: #fce7f3; color: #9d174d; }
+
+    .recipe-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .recipe-col h4 {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #2563eb;
+      margin-bottom: 9px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .recipe-col ul {
+      list-style: none;
+      padding: 0;
+    }
+    .recipe-col ul li {
+      font-size: 0.84rem;
+      color: #374151;
+      padding: 3px 0 3px 14px;
+      position: relative;
+      border-bottom: 1px solid #f8fafc;
+      line-height: 1.45;
+    }
+    .recipe-col ul li::before {
+      content: "·";
+      position: absolute;
+      left: 2px;
+      color: #2563eb;
+      font-size: 1.1rem;
+      line-height: 1.3;
+    }
+    .recipe-col ol {
+      list-style: none;
+      padding: 0;
+      counter-reset: step-counter;
+    }
+    .recipe-col ol li {
+      font-size: 0.84rem;
+      color: #374151;
+      padding: 5px 0 5px 26px;
+      position: relative;
+      border-bottom: 1px solid #f8fafc;
+      counter-increment: step-counter;
+      line-height: 1.45;
+    }
+    .recipe-col ol li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 5px;
+      background: #2563eb;
+      color: #fff;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 0.65rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 18px;
+      text-align: center;
+    }
+    .recipe-variations {
+      margin-top: 12px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .recipe-variations h5 {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #92400e;
+      margin-bottom: 8px;
+    }
+    .recipe-variations p {
+      font-size: 0.83rem;
+      color: #78350f;
+      margin-bottom: 4px;
+    }
+    .recipe-storage {
+      margin-top: 12px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #166534;
+    }
+    .recipe-storage strong {
+      font-weight: 700;
+    }
+    .recipe-stub {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 0.83rem;
+      color: #64748b;
+      margin-top: 10px;
+      font-style: italic;
+      text-align: center;
+    }
+    .recipe-stub strong {
+      color: #1e293b;
+      font-style: normal;
+    }
+
+    /* ─── Macro Bar ─── */
+    .macro-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .macro-chip {
+      flex: 1;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 6px 8px;
+      text-align: center;
+    }
+    .macro-chip .mc-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: block;
+    }
+    .macro-chip .mc-lbl {
+      font-size: 0.63rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+    .macro-chip.cal { border-color: #fca5a5; }
+    .macro-chip.cal .mc-val { color: #dc2626; }
+    .macro-chip.pro { border-color: #6ee7b7; }
+    .macro-chip.pro .mc-val { color: #059669; }
+    .macro-chip.carb { border-color: #fcd34d; }
+    .macro-chip.carb .mc-val { color: #d97706; }
+    .macro-chip.fat { border-color: #a5b4fc; }
+    .macro-chip.fat .mc-val { color: #4f46e5; }
+
+    /* ─── Workflow ─── */
+    .workflow-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 28px 30px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .workflow-phase {
+      margin-bottom: 26px;
+    }
+    .workflow-phase:last-child { margin-bottom: 0; }
+    .phase-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #2563eb;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #dbeafe;
+    }
+    .workflow-steps {
+      list-style: none;
+      padding: 0;
+      counter-reset: wf-counter;
+    }
+    .workflow-steps li {
+      padding: 8px 0 8px 34px;
+      position: relative;
+      counter-increment: wf-counter;
+      font-size: 0.9rem;
+      color: #374151;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .workflow-steps li::before {
+      content: counter(wf-counter);
+      position: absolute;
+      left: 0;
+      top: 9px;
+      background: #2563eb;
+      color: #fff;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 22px;
+      text-align: center;
+    }
+    .workflow-steps li strong { color: #0f172a; }
+    .workflow-steps li:last-child { border-bottom: none; }
+    .container-tips {
+      list-style: none;
+      padding: 0;
+    }
+    .container-tips li {
+      padding: 7px 0 7px 22px;
+      position: relative;
+      font-size: 0.87rem;
+      color: #374151;
+      border-bottom: 1px solid #f8fafc;
+    }
+    .container-tips li::before {
+      content: "◆";
+      position: absolute;
+      left: 0;
+      color: #2563eb;
+      font-size: 0.6rem;
+      top: 9px;
+    }
+    .container-tips li:last-child { border-bottom: none; }
+
+    /* ─── Formula Reference ─── */
+    .formula-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 28px 30px;
+      color: #e2e8f0;
+    }
+    .formula-item {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .formula-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .formula-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #93c5fd;
+      margin-bottom: 8px;
+    }
+    .formula-code {
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+      font-size: 0.83rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #a5f3fc;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+    .formula-note {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* ─── Quick Start Guide ─── */
+    .quickstart-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .qs-step {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px 22px;
+      display: flex;
+      gap: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .qs-num {
+      width: 38px;
+      height: 38px;
+      background: #2563eb;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .qs-content h4 {
+      font-size: 0.97rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .qs-content ul {
+      list-style: none;
+      padding: 0;
+    }
+    .qs-content ul li {
+      font-size: 0.86rem;
+      color: #475569;
+      padding: 3px 0 3px 16px;
+      position: relative;
+    }
+    .qs-content ul li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #2563eb;
+      font-size: 0.8rem;
+    }
+
+    .rhythm-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .rhythm-day {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .rhythm-day .rd-day {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #1d4ed8;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .rhythm-day .rd-task {
+      font-size: 0.72rem;
+      color: #374151;
+      line-height: 1.3;
+    }
+
+    .pro-tips-card {
+      background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+      border: 1px solid #f9a8d4;
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-top: 24px;
+    }
+    .pro-tips-card h4 {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #9d174d;
+      margin-bottom: 14px;
+    }
+    .pro-tips-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .pro-tips-card ul li {
+      font-size: 0.87rem;
+      color: #4c1d35;
+      padding: 5px 0 5px 22px;
+      position: relative;
+      border-bottom: 1px solid rgba(249,168,212,0.4);
+    }
+    .pro-tips-card ul li:last-child { border-bottom: none; }
+    .pro-tips-card ul li::before {
+      content: "✦";
+      position: absolute;
+      left: 0;
+      color: #db2777;
+      font-size: 0.7rem;
+      top: 7px;
+    }
+
+    /* ─── Footer ─── */
+    .page-footer {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+    .page-footer strong { color: #2563eb; }
+
+    /* ─── Print Styles ─── */
+    @media print {
+      body { background: #fff; font-size: 12pt; }
+      .brand-header { display: none !important; }
+      .page { padding: 0; max-width: 100%; }
+      .hero { background: #fff; border: 1px solid #ccc; border-radius: 0; }
+      .hero h1 { font-size: 20pt; color: #000; }
+      .hero .subtitle { color: #333; }
+      .hero .meta-chip { background: #333; }
+      .db-card, .workflow-card { box-shadow: none; border: 1px solid #ccc; }
+      .recipe-card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; break-inside: avoid; }
+      .recipe-header { background: #1a1a1a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .formula-card { background: #1a1a1a; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .qs-step { page-break-inside: avoid; break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+      .dashboard-mockup { box-shadow: none; border: 1px solid #ccc; }
+      h2.section-title { page-break-after: avoid; }
+      .divider { border-color: #ccc; margin: 24px 0; }
+      .pro-tips-card { background: #fff; border: 1px solid #ccc; }
+      .nutrition-card { background: #fff; border: 1px solid #ccc; }
+      .recipe-storage { background: #fff; border: 1px solid #ccc; }
+      .recipe-variations { background: #fff; border: 1px solid #ccc; }
+      @page { margin: 18mm 15mm; }
+    }
+
+    @media (max-width: 620px) {
+      .recipe-columns { grid-template-columns: 1fr; }
+      .recipe-meta-grid { grid-template-columns: repeat(2, 1fr); }
+      .nutrition-grid { grid-template-columns: repeat(3, 1fr); }
+      .dash-stats { grid-template-columns: repeat(2, 1fr); }
+      .rhythm-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Brand Header ─── -->
+<header class="brand-header" aria-label="Girl Gone AI">
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    Girl Gone AI
+  </div>
+  <div class="tagline">Smart Tools for Modern Life</div>
+</header>
+
+<div class="page">
+
+  <!-- ─── Hero ─── -->
+  <div class="hero">
+    <h1>Meal Prep &amp; Recipe Planner</h1>
+    <p class="subtitle">Your complete Notion template for a personal digital cookbook, weekly meal planning, and effortless grocery lists — all pre-linked and formula-ready.</p>
+    <div class="meta-chips">
+      <span class="meta-chip">3 Databases</span>
+      <span class="meta-chip">15 Starter Recipes</span>
+      <span class="meta-chip">Pre-Built Formulas</span>
+      <span class="meta-chip">Printable Workflow</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ DATABASES ═══════════════════════════════ -->
+  <div>
+    <div class="section-label">Databases</div>
+    <h2 class="section-title">Template Structure</h2>
+    <p style="color:#64748b;font-size:0.9rem;margin-bottom:28px;">Duplicate this page into your Notion workspace to get started. All databases are pre-linked and formulas are pre-built. Follow the Quick-Start Guide at the bottom before adding real data.</p>
+  </div>
+
+  <!-- ── 1. Recipes ── -->
+  <div class="db-card">
+    <div class="db-card-header">
+      <div class="db-icon blue" aria-hidden="true">🍳</div>
+      <div>
+        <h3 class="db-title">1. Recipes Database</h3>
+        <p class="db-purpose">Your personal digital cookbook — every recipe searchable, tagged, and rated.</p>
+      </div>
+    </div>
+
+    <table class="prop-table" aria-label="Recipes database properties">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="prop-name">Recipe Name</td><td><span class="prop-type">Title</span></td><td class="prop-notes">Clear, descriptive name</td></tr>
+        <tr><td class="prop-name">Cuisine</td><td><span class="prop-type">Select</span></td><td class="prop-notes">American / Italian / Mexican / Chinese / Japanese / Thai / Indian / Mediterranean / Korean / French / Middle Eastern / Southern / Tex-Mex / Other</td></tr>
+        <tr><td class="prop-name">Category</td><td><span class="prop-type">Select</span></td><td class="prop-notes">Breakfast / Lunch / Dinner / Snack / Dessert / Appetizer / Side / Drink / Sauce</td></tr>
+        <tr><td class="prop-name">Protein</td><td><span class="prop-type">Select</span></td><td class="prop-notes">Chicken / Beef / Pork / Fish / Shrimp / Tofu / Eggs / Beans / Turkey / Lamb / None</td></tr>
+        <tr><td class="prop-name">Difficulty</td><td><span class="prop-type">Select</span></td><td class="prop-notes">Easy / Medium / Hard</td></tr>
+        <tr><td class="prop-name">Prep Time</td><td><span class="prop-type">Number</span></td><td class="prop-notes">Minutes of active prep</td></tr>
+        <tr><td class="prop-name">Cook Time</td><td><span class="prop-type">Number</span></td><td class="prop-notes">Minutes of cooking</td></tr>
+        <tr><td class="prop-name">Total Time</td><td><span class="prop-type">Formula</span></td><td><span class="prop-formula">prop("Prep Time") + prop("Cook Time")</span></td></tr>
+        <tr><td class="prop-name">Time Category</td><td><span class="prop-type">Formula</span></td><td><span class="prop-formula">if(prop("Total Time") &lt;= 15, "15 min or less", if(prop("Total Time") &lt;= 30, "30 min or less", if(prop("Total Time") &lt;= 60, "1 hour or less", "1+ hours")))</span></td></tr>
+        <tr><td class="prop-name">Servings</td><td><span class="prop-type">Number</span></td><td class="prop-notes">Number of servings produced</td></tr>
+        <tr><td class="prop-name">Calories (per serving)</td><td><span class="prop-type">Number</span></td><td class="prop-notes">Approximate kcal</td></tr>
+        <tr><td class="prop-name">Protein (g)</td><td><span class="prop-type">Number</span></td><td class="prop-notes">Grams per serving</td></tr>
+        <tr><td class="prop-name">Carbs (g)</td><td><span class="prop-type">Number</span></td><td class="prop-notes">Grams per serving</td></tr>
+        <tr><td class="prop-name">Fat (g)</td><td><span class="prop-type">Number</span></td><td class="prop-notes">Grams per serving</td></tr>
+        <tr><td class="prop-name">Fiber (g)</td><td><span class="prop-type">Number</span></td><td class="prop-notes">Grams per serving</td></tr>
+        <tr><td class="prop-name">Dietary Tags</td><td><span class="prop-type">Multi-select</span></td><td class="prop-notes">Vegetarian / Vegan / Gluten-Free / Dairy-Free / Keto / Paleo / Nut-Free / Low-Sodium / Low-Carb / High-Protein / Whole30 / Pescatarian</td></tr>
+        <tr><td class="prop-name">Ingredients</td><td><span class="prop-type">Text</span></td><td class="prop-notes">Full ingredient list with quantities</td></tr>
+        <tr><td class="prop-name">Instructions</td><td><span class="prop-type">Text</span></td><td class="prop-notes">Numbered step-by-step instructions</td></tr>
+        <tr><td class="prop-name">Source</td><td><span class="prop-type">URL</span></td><td class="prop-notes">Link to original recipe (blog, YouTube, etc.)</td></tr>
+        <tr><td class="prop-name">Source Name</td><td><span class="prop-type">Text</span></td><td class="prop-notes">"Budget Bytes" / "Grandma" / "Original" / etc.</td></tr>
+        <tr><td class="prop-name">Meal Prep Friendly</td><td><span class="prop-type">Checkbox</span></td><td class="prop-notes">Does this recipe store and reheat well?</td></tr>
+        <tr><td class="prop-name">Freezer Friendly</td><td><span class="prop-type">Checkbox</span></td><td class="prop-notes">Can this be frozen and reheated?</td></tr>
+        <tr><td class="prop-name">Storage Notes</td><td><span class="prop-type">Text</span></td><td class="prop-notes">How long it keeps, reheating instructions</td></tr>
+        <tr><td class="prop-name">Equipment</td><td><span class="prop-type">Multi-select</span></td><td class="prop-notes">Oven / Stovetop / Instant Pot / Slow Cooker / Air Fryer / Blender / Sheet Pan / Grill / No Cook</td></tr>
+        <tr><td class="prop-name">Season</td><td><span class="prop-type">Multi-select</span></td><td class="prop-notes">Spring / Summer / Fall / Winter / Any</td></tr>
+        <tr><td class="prop-name">Rating</td><td><span class="prop-type">Select</span></td><td class="prop-notes">5-Amazing / 4-Great / 3-Good / 2-Okay / 1-Won't Make Again</td></tr>
+        <tr><td class="prop-name">Times Made</td><td><span class="prop-type">Number</span></td><td class="prop-notes">How many times you've made this</td></tr>
+        <tr><td class="prop-name">Last Made</td><td><span class="prop-type">Date</span></td><td class="prop-notes">When you last cooked this</td></tr>
+        <tr><td class="prop-name">Notes</td><td><span class="prop-type">Text</span></td><td class="prop-notes">Substitutions, tips, "kids liked it," adjustments</td></tr>
+        <tr><td class="prop-name">Photo</td><td><span class="prop-type">Files &amp; media</span></td><td class="prop-notes">Upload a photo of the finished dish</td></tr>
+        <tr><td class="prop-name">Linked Meal Plans</td><td><span class="prop-type">Relation</span></td><td class="prop-notes">→ Meal Plans database</td></tr>
+        <tr><td class="prop-name">Linked Grocery Items</td><td><span class="prop-type">Relation</span></td><td class="prop-notes">→ Grocery Lists database</td></tr>
+        <tr><td class="prop-name">Tags</td><td><span class="prop-type">Multi-select</span></td><td class="prop-notes">Family Favorite / Quick Weeknight / Batch Cook / Date Night / Company Worthy / Budget Friendly / Kid Approved</td></tr>
+      </tbody>
+    </table>
+
+    <div class="views-section">
+      <div class="views-label">Available Views</div>
+      <div class="views-list">
+        <span class="view-pill active">All Recipes</span>
+        <span class="view-pill">Recipe Cards</span>
+        <span class="view-pill">By Cuisine</span>
+        <span class="view-pill">By Category</span>
+        <span class="view-pill">Quick Meals (&le;30 min)</span>
+        <span class="view-pill">Meal Prep Friendly</span>
+        <span class="view-pill">High Protein</span>
+        <span class="view-pill">Vegetarian</span>
+        <span class="view-pill">Top Rated</span>
+        <span class="view-pill">Haven't Made Recently</span>
+        <span class="view-pill">By Protein Source</span>
+        <span class="view-pill">Keto Friendly</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. Meal Plans ── -->
+  <div class="db-card">
+    <div class="db-card-header">
+      <div class="db-icon green" aria-hidden="true">📅</div>
+      <div>
+        <h3 class="db-title">2. Meal Plans Database</h3>
+        <p class="db-purpose">Weekly meal planning board — assign recipes to days and meals, track daily nutrition, and see the week at a glance.</p>
+      </div>
+    </div>
+
+    <table class="prop-table" aria-label="Meal Plans database properties">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="prop-name">Meal Plan Entry</td><td><span class="prop-type">Title</span></td><td class="prop-notes">Auto-format: "[Day] — [Meal]" (e.g., "Monday — Dinner")</td></tr>
+        <tr><td class="prop-name">Week</td><td><span class="prop-type">Date</span></td><td class="prop-notes">Monday of the planning week</td></tr>
+        <tr><td class="prop-name">Day</td><td><span class="prop-type">Select</span></td><td class="prop-notes">Monday / Tuesday / Wednesday / Thursday / Friday / Saturday / Sunday</td></tr>
+        <tr><td class="prop-name">Meal</td><td><span class="prop-type">Select</span></td><td class="prop-notes">Breakfast / Lunch / Dinner / Snack</td></tr>
+        <tr><td class="prop-name">Recipe</td><td><span class="prop-type">Relation</span></td><td class="prop-notes">→ Recipes database</td></tr>
+        <tr><td class="prop-name">Recipe Name</td><td><span class="prop-type">Rollup</span></td><td class="prop-notes">Recipe Name from linked Recipe</td></tr>
+        <tr><td class="prop-name">Custom Meal</td><td><span class="prop-type">Text</span></td><td class="prop-notes">For meals without a recipe entry (e.g., "Leftovers" or "Eating out")</td></tr>
+        <tr><td class="prop-name">Prep Required</td><td><span class="prop-type">Checkbox</span></td><td class="prop-notes">Does this need advance prep?</td></tr>
+        <tr><td class="prop-name">Prep Day</td><td><span class="prop-type">Select</span></td><td class="prop-notes">Sunday / Monday / Tuesday / Wednesday / Thursday / Friday / Saturday</td></tr>
+        <tr><td class="prop-name">Prep Notes</td><td><span class="prop-type">Text</span></td><td class="prop-notes">What to prep in advance (chop vegetables, marinate, etc.)</td></tr>
+        <tr><td class="prop-name">Calories</td><td><span class="prop-type">Rollup</span></td><td class="prop-notes">Calories per serving from linked Recipe</td></tr>
+        <tr><td class="prop-name">Protein</td><td><span class="prop-type">Rollup</span></td><td class="prop-notes">Protein (g) from linked Recipe</td></tr>
+        <tr><td class="prop-name">Carbs</td><td><span class="prop-type">Rollup</span></td><td class="prop-notes">Carbs (g) from linked Recipe</td></tr>
+        <tr><td class="prop-name">Fat</td><td><span class="prop-type">Rollup</span></td><td class="prop-notes">Fat (g) from linked Recipe</td></tr>
+        <tr><td class="prop-name">Servings Needed</td><td><span class="prop-type">Number</span></td><td class="prop-notes">How many servings to prepare (family size)</td></tr>
+        <tr><td class="prop-name">Status</td><td><span class="prop-type">Select</span></td><td class="prop-notes">Planned / Prepped / Cooked / Skipped / Swapped</td></tr>
+        <tr><td class="prop-name">Notes</td><td><span class="prop-type">Text</span></td><td class="prop-notes">Adjustments, substitutions, "made extra for lunches"</td></tr>
+      </tbody>
+    </table>
+
+    <div class="views-section" style="margin-bottom:20px;">
+      <div class="views-label">Available Views</div>
+      <div class="views-list">
+        <span class="view-pill active">This Week</span>
+        <span class="view-pill">Weekly Board</span>
+        <span class="view-pill">Meal Calendar</span>
+        <span class="view-pill">Prep List</span>
+        <span class="view-pill">Next Week</span>
+        <span class="view-pill">By Meal Type</span>
+        <span class="view-pill">Nutrition Summary</span>
+      </div>
+    </div>
+
+    <div class="nutrition-card">
+      <h4>Daily Nutrition Targets — Customize These</h4>
+      <div class="nutrition-grid">
+        <div class="nutrient-box">
+          <span class="n-value">2,000</span>
+          <div class="n-label">Calories</div>
+          <div class="n-note">Adjust per TDEE &amp; goals</div>
+        </div>
+        <div class="nutrient-box">
+          <span class="n-value">100g</span>
+          <div class="n-label">Protein</div>
+          <div class="n-note">0.7–1g / lb body weight</div>
+        </div>
+        <div class="nutrient-box">
+          <span class="n-value">250g</span>
+          <div class="n-label">Carbs</div>
+          <div class="n-note">Adjust for keto / performance</div>
+        </div>
+        <div class="nutrient-box">
+          <span class="n-value">65g</span>
+          <div class="n-label">Fat</div>
+          <div class="n-note">25–35% of total calories</div>
+        </div>
+        <div class="nutrient-box">
+          <span class="n-value">30g</span>
+          <div class="n-label">Fiber</div>
+          <div class="n-note">Most adults fall short</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. Grocery Lists ── -->
+  <div class="db-card">
+    <div class="db-card-header">
+      <div class="db-icon amber" aria-hidden="true">🛒</div>
+      <div>
+        <h3 class="db-title">3. Grocery Lists Database</h3>
+        <p class="db-purpose">Weekly shopping lists organized by store section, linked to recipes, with pantry tracking.</p>
+      </div>
+    </div>
+
+    <table class="prop-table" aria-label="Grocery Lists database properties">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="prop-name">Item Name</td><td><span class="prop-type">Title</span></td><td class="prop-notes">Grocery item (e.g., "Chicken thighs, boneless skinless")</td></tr>
+        <tr><td class="prop-name">Store Section</td><td><span class="prop-type">Select</span></td><td class="prop-notes">Produce / Dairy &amp; Eggs / Meat &amp; Seafood / Bakery / Pantry &amp; Dry Goods / Frozen / Canned &amp; Jarred / Spices &amp; Seasonings / Oils &amp; Vinegars / Snacks / Beverages / Other</td></tr>
+        <tr><td class="prop-name">Quantity</td><td><span class="prop-type">Text</span></td><td class="prop-notes">Amount needed (e.g., "2 lbs," "1 bunch," "3 cans")</td></tr>
+        <tr><td class="prop-name">Week</td><td><span class="prop-type">Date</span></td><td class="prop-notes">Monday of the shopping week</td></tr>
+        <tr><td class="prop-name">Linked Recipes</td><td><span class="prop-type">Relation</span></td><td class="prop-notes">→ Recipes database</td></tr>
+        <tr><td class="prop-name">Have It</td><td><span class="prop-type">Checkbox</span></td><td class="prop-notes">Already in your pantry — skip this item</td></tr>
+        <tr><td class="prop-name">Purchased</td><td><span class="prop-type">Checkbox</span></td><td class="prop-notes">Check off as you shop</td></tr>
+        <tr><td class="prop-name">Estimated Cost</td><td><span class="prop-type">Number (USD)</span></td><td class="prop-notes">Approximate cost</td></tr>
+        <tr><td class="prop-name">Store</td><td><span class="prop-type">Select</span></td><td class="prop-notes">Primary Store / Costco / Trader Joe's / Specialty / Online</td></tr>
+        <tr><td class="prop-name">Notes</td><td><span class="prop-type">Text</span></td><td class="prop-notes">Brand preference, size, substitution options</td></tr>
+        <tr><td class="prop-name">Recurring</td><td><span class="prop-type">Checkbox</span></td><td class="prop-notes">Buy this every week (pantry staple)</td></tr>
+        <tr><td class="prop-name">Tags</td><td><span class="prop-type">Multi-select</span></td><td class="prop-notes">Organic / Sale / Bulk / Staple</td></tr>
+      </tbody>
+    </table>
+
+    <div class="views-section">
+      <div class="views-label">Available Views</div>
+      <div class="views-list">
+        <span class="view-pill active">This Week's List</span>
+        <span class="view-pill">Shopping Mode</span>
+        <span class="view-pill">All Items</span>
+        <span class="view-pill">Pantry Staples</span>
+        <span class="view-pill">By Store</span>
+        <span class="view-pill">Cost Estimate</span>
+        <span class="view-pill">Already Have</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ═══════════════════════════════ DASHBOARD ═══════════════════════════════ -->
+  <div style="margin-bottom:22px;">
+    <div class="section-label">Dashboard</div>
+    <h2 class="section-title">Meal Prep Command Center</h2>
+    <p style="color:#64748b;font-size:0.9rem;margin-bottom:22px;">Create this as a Notion page that serves as your weekly meal planning hub. All sections link to your databases with filtered views.</p>
+  </div>
+
+  <div class="dashboard-mockup">
+    <!-- Window chrome -->
+    <div class="dash-topbar">
+      <span class="dot dot-red"></span>
+      <span class="dot dot-amber" style="margin-left:4px;"></span>
+      <span class="dot dot-green" style="margin-left:4px;"></span>
+      <span style="margin-left:14px;">MEAL PREP HQ — Week of April 7</span>
+    </div>
+
+    <!-- Stats row -->
+    <div class="dash-stats">
+      <div class="dash-stat">
+        <span class="stat-value">14</span>
+        <div class="stat-label">Meals Planned</div>
+      </div>
+      <div class="dash-stat">
+        <span class="stat-value">47</span>
+        <div class="stat-label">Recipes Saved</div>
+      </div>
+      <div class="dash-stat">
+        <span class="stat-value">32</span>
+        <div class="stat-label">Grocery Items</div>
+      </div>
+      <div class="dash-stat">
+        <span class="stat-value">2</span>
+        <div class="stat-label">Prep Sessions</div>
+      </div>
+    </div>
+
+    <!-- This Week's Meal Plan -->
+    <div class="dash-section">
+      <div class="dash-section-title">This Week's Meal Plan</div>
+      <div class="dash-linked-badge">Linked view → Meal Plans, filter: this week</div>
+      <div style="display:grid;grid-template-columns:34px 1fr 1fr 1fr;gap:4px;margin-bottom:4px;">
+        <div style="font-size:0.65rem;font-weight:700;color:#94a3b8;text-align:right;padding-right:6px;"></div>
+        <div style="font-size:0.65rem;font-weight:700;color:#94a3b8;padding-left:6px;">BREAKFAST</div>
+        <div style="font-size:0.65rem;font-weight:700;color:#94a3b8;padding-left:6px;">LUNCH</div>
+        <div style="font-size:0.65rem;font-weight:700;color:#94a3b8;padding-left:6px;">DINNER</div>
+      </div>
+      <div class="meal-row"><div class="meal-day">Mon</div><div class="meal-cell breakfast">Overnight Oats</div><div class="meal-cell lunch">Turkey Wrap</div><div class="meal-cell dinner">Sheet Pan Chicken</div></div>
+      <div class="meal-row"><div class="meal-day">Tue</div><div class="meal-cell breakfast">Smoothie Bowl</div><div class="meal-cell lunch">Leftover CP</div><div class="meal-cell dinner">Beef Stir-Fry</div></div>
+      <div class="meal-row"><div class="meal-day">Wed</div><div class="meal-cell breakfast">Overnight Oats</div><div class="meal-cell lunch">Grain Bowl</div><div class="meal-cell dinner">Pasta Primavera</div></div>
+      <div class="meal-row"><div class="meal-day">Thu</div><div class="meal-cell breakfast">Eggs + Toast</div><div class="meal-cell lunch">Leftover PP</div><div class="meal-cell dinner">Slow Cooker Chili</div></div>
+      <div class="meal-row"><div class="meal-day">Fri</div><div class="meal-cell breakfast">Smoothie Bowl</div><div class="meal-cell lunch">Leftover SC</div><div class="meal-cell dinner">Pizza (eating out)</div></div>
+      <div class="meal-row"><div class="meal-day">Sat</div><div class="meal-cell breakfast">Pancakes</div><div class="meal-cell lunch">Sandwiches</div><div class="meal-cell dinner">Grilled Salmon</div></div>
+      <div class="meal-row"><div class="meal-day">Sun</div><div class="meal-cell breakfast">Brunch Frittata</div><div class="meal-cell lunch">Snack Plate</div><div class="meal-cell dinner">Meal Prep for Week</div></div>
+    </div>
+
+    <!-- Prep Schedule -->
+    <div class="dash-section">
+      <div class="dash-section-title">Prep Schedule</div>
+      <div class="dash-linked-badge">Linked view → Meal Plans, filter: Prep Required = true</div>
+      <div class="dash-row"><strong>Sunday:</strong> Chop vegetables, cook rice, marinate chicken</div>
+      <div class="dash-row"><strong>Wednesday:</strong> Prep chili ingredients, make overnight oats</div>
+    </div>
+
+    <!-- Grocery List -->
+    <div class="dash-section">
+      <div class="dash-section-title">Grocery List</div>
+      <div class="dash-linked-badge">Linked view → Grocery Lists, this week, Shopping Mode</div>
+      <div class="dash-row">32 items &nbsp;·&nbsp; Est. cost: <strong>$87</strong></div>
+    </div>
+
+    <!-- Favorite Recipes -->
+    <div class="dash-section">
+      <div class="dash-section-title">Favorite Recipes — Quick Access</div>
+      <div class="dash-linked-badge">Linked view → Recipes, filter: Rating = 5-Amazing</div>
+    </div>
+
+    <!-- Daily Nutrition -->
+    <div class="dash-section">
+      <div class="dash-section-title">Daily Nutrition (Today)</div>
+      <div class="dash-nutrition-row">
+        <div class="dash-nut-pill">Calories: 1,850</div>
+        <div class="dash-nut-pill">Protein: 95g</div>
+        <div class="dash-nut-pill">Carbs: 210g</div>
+      </div>
+    </div>
+
+    <!-- Recently Added -->
+    <div class="dash-section">
+      <div class="dash-section-title">Recently Added Recipes</div>
+      <div class="dash-linked-badge">Linked view → Recipes, sorted: created date desc</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ═══════════════════════════════ STARTER RECIPES ═══════════════════════════════ -->
+  <div style="margin-bottom:22px;">
+    <div class="section-label">Starter Recipes</div>
+    <h2 class="section-title">15 Pre-Loaded Recipes</h2>
+    <p style="color:#64748b;font-size:0.9rem;margin-bottom:22px;">Keep, modify, or delete these — they're here to give you a running start. Recipes 1–3 include full ingredients and instructions; recipes 4–15 show all key metadata so you can fill in your own details.</p>
+  </div>
+
+  <div class="recipes-grid">
+
+    <!-- ── Recipe 1 ── -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 01</div>
+        <div class="recipe-title">Sheet Pan Chicken Thighs with Vegetables</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">15</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">35</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">4</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">380</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">American</span>
+          <span class="recipe-info-badge">Dinner</span>
+          <span class="recipe-info-badge">Chicken</span>
+          <span class="recipe-info-badge">Oven + Sheet Pan</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+          <span class="recipe-info-badge">Freezer ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Gluten-Free</span>
+          <span class="dietary-badge badge-slate">Dairy-Free</span>
+          <span class="dietary-badge badge-amber">Paleo</span>
+          <span class="dietary-badge badge-teal">Whole30</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">380</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">32g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">22g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">18g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-columns" style="margin-top:16px;">
+          <div class="recipe-col">
+            <h4>Ingredients</h4>
+            <ul>
+              <li>8 bone-in chicken thighs (about 2 lbs)</li>
+              <li>2 medium sweet potatoes, cubed (1-inch pieces)</li>
+              <li>2 cups broccoli florets</li>
+              <li>1 red bell pepper, sliced</li>
+              <li>2 tbsp olive oil</li>
+              <li>1 tsp garlic powder</li>
+              <li>1 tsp smoked paprika</li>
+              <li>1/2 tsp onion powder</li>
+              <li>Salt and pepper to taste</li>
+              <li>Fresh lemon (for serving)</li>
+            </ul>
+          </div>
+          <div class="recipe-col">
+            <h4>Instructions</h4>
+            <ol>
+              <li>Preheat oven to 425°F. Line a large sheet pan with parchment paper.</li>
+              <li>Toss sweet potatoes with 1 tbsp olive oil, salt, and pepper. Spread on the pan and roast 10 minutes.</li>
+              <li>Season chicken thighs with garlic powder, paprika, onion powder, salt, and pepper.</li>
+              <li>Remove pan, push sweet potatoes to sides. Place chicken in center, skin-side up.</li>
+              <li>Add broccoli and bell pepper around chicken. Drizzle remaining oil over vegetables.</li>
+              <li>Roast 25–30 minutes until chicken reaches 165°F and skin is crispy.</li>
+              <li>Squeeze fresh lemon over everything before serving.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="recipe-storage"><strong>Storage:</strong> Refrigerate up to 4 days. Reheat in oven at 375°F for 10 minutes to keep chicken crispy.</div>
+      </div>
+    </div>
+
+    <!-- ── Recipe 2 ── -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 02</div>
+        <div class="recipe-title">Overnight Oats — 3 Ways</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">5</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">0</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">1</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">350</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">American</span>
+          <span class="recipe-info-badge">Breakfast</span>
+          <span class="recipe-info-badge">No Cook</span>
+          <span class="recipe-info-badge">5 min + overnight</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Vegetarian</span>
+          <span class="dietary-badge badge-blue">High-Protein (with add-ins)</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">350</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">14g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">52g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">10g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-columns" style="margin-top:16px;">
+          <div class="recipe-col">
+            <h4>Base Ingredients (per serving)</h4>
+            <ul>
+              <li>1/2 cup rolled oats</li>
+              <li>1/2 cup milk (dairy or plant-based)</li>
+              <li>1/4 cup Greek yogurt</li>
+              <li>1 tbsp chia seeds</li>
+              <li>1 tsp honey or maple syrup</li>
+            </ul>
+          </div>
+          <div class="recipe-col">
+            <h4>Instructions</h4>
+            <ol>
+              <li>Combine base ingredients in a mason jar or container.</li>
+              <li>Add variation toppings and mix well.</li>
+              <li>Cover and refrigerate overnight (minimum 4 hours).</li>
+              <li>Eat cold or microwave 1–2 minutes. Add a splash of milk if too thick.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="recipe-variations">
+          <h5>3 Variations</h5>
+          <p><strong>A — PB Banana:</strong> 1 tbsp peanut butter + 1/2 sliced banana + drizzle of honey</p>
+          <p><strong>B — Berry Vanilla:</strong> 1/2 cup mixed berries + 1/2 tsp vanilla extract + 1 tbsp almond slivers</p>
+          <p><strong>C — Chocolate Protein:</strong> 1 scoop chocolate protein powder + 1 tbsp cocoa powder + 1 tbsp almond butter</p>
+        </div>
+        <div class="recipe-storage"><strong>Storage:</strong> Keeps in fridge for 3 days. Make 3–5 jars on Sunday for the whole week.</div>
+      </div>
+    </div>
+
+    <!-- ── Recipe 3 ── -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 03</div>
+        <div class="recipe-title">Quick Beef Stir-Fry</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">15</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">10</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">4</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">420</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">Chinese</span>
+          <span class="recipe-info-badge">Dinner</span>
+          <span class="recipe-info-badge">Beef</span>
+          <span class="recipe-info-badge">Stovetop</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+          <span class="recipe-info-badge">Freezer ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-slate">Dairy-Free</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">420</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">35g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">30g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">16g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-columns" style="margin-top:16px;">
+          <div class="recipe-col">
+            <h4>Ingredients</h4>
+            <ul>
+              <li>1 lb flank steak, thinly sliced against the grain</li>
+              <li>2 cups broccoli florets</li>
+              <li>1 red bell pepper, sliced</li>
+              <li>1 cup snap peas</li>
+              <li>3 cloves garlic, minced</li>
+              <li>1 tbsp fresh ginger, grated</li>
+              <li>3 tbsp soy sauce (or tamari for GF)</li>
+              <li>1 tbsp sesame oil</li>
+              <li>1 tbsp rice vinegar</li>
+              <li>1 tbsp honey</li>
+              <li>1 tbsp cornstarch + 2 tbsp water (slurry)</li>
+              <li>2 tbsp vegetable oil</li>
+              <li>Cooked rice for serving</li>
+              <li>Sesame seeds and green onion, to garnish</li>
+            </ul>
+          </div>
+          <div class="recipe-col">
+            <h4>Instructions</h4>
+            <ol>
+              <li>Whisk together soy sauce, sesame oil, rice vinegar, and honey. Set aside.</li>
+              <li>Heat vegetable oil in a large skillet or wok over high heat until smoking.</li>
+              <li>Add beef in a single layer — don't crowd the pan. Sear 1–2 min per side. Remove and set aside.</li>
+              <li>Add broccoli, bell pepper, and snap peas. Stir-fry 3–4 minutes until crisp-tender.</li>
+              <li>Add garlic and ginger, stir 30 seconds until fragrant.</li>
+              <li>Return beef to pan. Pour sauce over everything.</li>
+              <li>Add cornstarch slurry and stir until sauce thickens, about 1 minute.</li>
+              <li>Serve over rice, garnish with sesame seeds and green onion.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="recipe-storage"><strong>Storage:</strong> Refrigerate up to 3 days. Store rice separately. Reheat in a skillet for best results.</div>
+      </div>
+    </div>
+
+    <!-- ── Recipes 4–15 Compact Cards ── -->
+
+    <!-- Recipe 4 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 04</div>
+        <div class="recipe-title">Mediterranean Grain Bowl</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">15</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">20</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">4</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">450</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">Mediterranean</span>
+          <span class="recipe-info-badge">Lunch</span>
+          <span class="recipe-info-badge">Chicken</span>
+          <span class="recipe-info-badge">Stovetop</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-blue">High-Protein</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">450</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">30g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">45g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">18g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">This recipe is pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion to view or edit the full ingredients and instructions.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 5 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 05</div>
+        <div class="recipe-title">Slow Cooker Chili</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">15</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">6 hrs</span><div class="rm-label">Cook</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">8</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">380</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">American</span>
+          <span class="recipe-info-badge">Dinner</span>
+          <span class="recipe-info-badge">Beef</span>
+          <span class="recipe-info-badge">Slow Cooker</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+          <span class="recipe-info-badge">Freezer ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Gluten-Free</span>
+          <span class="dietary-badge badge-slate">Dairy-Free</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">380</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">28g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">35g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">14g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 6 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 06</div>
+        <div class="recipe-title">Turkey Taco Lettuce Wraps</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">10</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">15</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">4</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">280</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">Tex-Mex</span>
+          <span class="recipe-info-badge">Dinner</span>
+          <span class="recipe-info-badge">Turkey</span>
+          <span class="recipe-info-badge">Stovetop</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+          <span class="recipe-info-badge">Freezer ✓ (filling)</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Gluten-Free</span>
+          <span class="dietary-badge badge-purple">Low-Carb</span>
+          <span class="dietary-badge badge-amber">Keto</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">280</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">26g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">12g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">14g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 7 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 07</div>
+        <div class="recipe-title">Pasta Primavera</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">10</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">20</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">4</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">420</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">Italian</span>
+          <span class="recipe-info-badge">Dinner</span>
+          <span class="recipe-info-badge">Vegetarian</span>
+          <span class="recipe-info-badge">Stovetop</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Vegetarian</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">420</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">14g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">58g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">16g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 8 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 08</div>
+        <div class="recipe-title">Smoothie Bowl (Berry Protein)</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">5</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">0</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">1</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">380</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">American</span>
+          <span class="recipe-info-badge">Breakfast</span>
+          <span class="recipe-info-badge">Blender</span>
+          <span class="recipe-info-badge">Make Fresh</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Vegetarian</span>
+          <span class="dietary-badge badge-green">Gluten-Free</span>
+          <span class="dietary-badge badge-blue">High-Protein</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">380</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">28g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">48g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">8g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 9 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 09</div>
+        <div class="recipe-title">Chicken Caesar Salad Wraps</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">10</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">0</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">4</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">350</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">American</span>
+          <span class="recipe-info-badge">Lunch</span>
+          <span class="recipe-info-badge">Chicken</span>
+          <span class="recipe-info-badge">No Cook</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-blue">High-Protein</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">350</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">28g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">28g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">14g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 10 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 10</div>
+        <div class="recipe-title">Black Bean &amp; Sweet Potato Tacos</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">10</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">25</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">4</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">360</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">Mexican</span>
+          <span class="recipe-info-badge">Dinner</span>
+          <span class="recipe-info-badge">Beans</span>
+          <span class="recipe-info-badge">Oven + Stovetop</span>
+          <span class="recipe-info-badge">Meal Prep ✓ (filling)</span>
+          <span class="recipe-info-badge">Freezer ✓ (filling)</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Vegetarian</span>
+          <span class="dietary-badge badge-green">Vegan</span>
+          <span class="dietary-badge badge-slate">Dairy-Free</span>
+          <span class="dietary-badge badge-green">Gluten-Free</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">360</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">12g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">56g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">10g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 11 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 11</div>
+        <div class="recipe-title">Egg &amp; Veggie Breakfast Frittata</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">10</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">20</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">6</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">220</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">Italian</span>
+          <span class="recipe-info-badge">Breakfast</span>
+          <span class="recipe-info-badge">Eggs</span>
+          <span class="recipe-info-badge">Oven + Stovetop</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+          <span class="recipe-info-badge">Freezer ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Vegetarian</span>
+          <span class="dietary-badge badge-green">Gluten-Free</span>
+          <span class="dietary-badge badge-amber">Keto</span>
+          <span class="dietary-badge badge-purple">Low-Carb</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">220</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">16g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">8g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">14g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 12 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 12</div>
+        <div class="recipe-title">Honey Garlic Salmon</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">5</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">15</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">4</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">340</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">American</span>
+          <span class="recipe-info-badge">Dinner</span>
+          <span class="recipe-info-badge">Fish</span>
+          <span class="recipe-info-badge">Oven</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Gluten-Free</span>
+          <span class="dietary-badge badge-slate">Dairy-Free</span>
+          <span class="dietary-badge badge-blue">High-Protein</span>
+          <span class="dietary-badge badge-teal">Pescatarian</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">340</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">34g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">14g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">16g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 13 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 13</div>
+        <div class="recipe-title">Chicken Burrito Bowl</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">15</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">20</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">4</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">480</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">Mexican</span>
+          <span class="recipe-info-badge">Lunch</span>
+          <span class="recipe-info-badge">Chicken</span>
+          <span class="recipe-info-badge">Stovetop</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+          <span class="recipe-info-badge">Freezer ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Gluten-Free</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">480</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">35g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">52g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">14g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 14 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 14</div>
+        <div class="recipe-title">One-Pot Lentil Soup</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">10</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">30</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">6</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">280</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">Mediterranean</span>
+          <span class="recipe-info-badge">Dinner</span>
+          <span class="recipe-info-badge">Beans / Lentils</span>
+          <span class="recipe-info-badge">Stovetop</span>
+          <span class="recipe-info-badge">Meal Prep ✓</span>
+          <span class="recipe-info-badge">Freezer ✓</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Vegan</span>
+          <span class="dietary-badge badge-green">Gluten-Free</span>
+          <span class="dietary-badge badge-slate">Dairy-Free</span>
+          <span class="dietary-badge badge-teal">Low-Fat</span>
+          <span class="dietary-badge badge-blue">High-Protein</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">280</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">18g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">42g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">4g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+    <!-- Recipe 15 -->
+    <div class="recipe-card">
+      <div class="recipe-header">
+        <div class="recipe-number">Recipe 15</div>
+        <div class="recipe-title">Greek Yogurt Parfait</div>
+        <div class="recipe-meta-grid">
+          <div class="recipe-meta-item"><span class="rm-value">5</span><div class="rm-label">Prep (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">0</span><div class="rm-label">Cook (min)</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">1</span><div class="rm-label">Servings</div></div>
+          <div class="recipe-meta-item"><span class="rm-value">280</span><div class="rm-label">Cal / serving</div></div>
+        </div>
+        <div class="recipe-info-row">
+          <span class="recipe-info-badge">American</span>
+          <span class="recipe-info-badge">Snack</span>
+          <span class="recipe-info-badge">No Cook</span>
+          <span class="recipe-info-badge">Make Fresh</span>
+        </div>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-tags-row">
+          <span class="dietary-badge badge-green">Vegetarian</span>
+          <span class="dietary-badge badge-green">Gluten-Free</span>
+          <span class="dietary-badge badge-blue">High-Protein</span>
+        </div>
+        <div class="macro-row">
+          <div class="macro-chip cal"><span class="mc-val">280</span><div class="mc-lbl">Calories</div></div>
+          <div class="macro-chip pro"><span class="mc-val">20g</span><div class="mc-lbl">Protein</div></div>
+          <div class="macro-chip carb"><span class="mc-val">35g</span><div class="mc-lbl">Carbs</div></div>
+          <div class="macro-chip fat"><span class="mc-val">8g</span><div class="mc-lbl">Fat</div></div>
+        </div>
+        <div class="recipe-stub">Pre-loaded in the template. Open the <strong>Recipes</strong> database in Notion for full details.</div>
+      </div>
+    </div>
+
+  </div><!-- /recipes-grid -->
+
+  <hr class="divider" />
+
+  <!-- ═══════════════════════════════ WEEKLY WORKFLOW ═══════════════════════════════ -->
+  <div style="margin-bottom:22px;">
+    <div class="section-label">Workflow</div>
+    <h2 class="section-title">Weekly Meal Prep Workflow</h2>
+    <p style="color:#64748b;font-size:0.9rem;margin-bottom:22px;">Follow this order every Sunday to maximize efficiency and minimize wasted time.</p>
+  </div>
+
+  <div class="workflow-card">
+    <div class="workflow-phase">
+      <div class="phase-title">Before You Start</div>
+      <ul class="workflow-steps">
+        <li>Review this week's Meal Plan</li>
+        <li>Check the Prep List view for everything that needs advance prep</li>
+        <li>Pull up the Grocery List — confirm all items are purchased</li>
+        <li>Clear counter space and pull out containers</li>
+      </ul>
+    </div>
+
+    <div class="workflow-phase">
+      <div class="phase-title">Sunday Prep Session — 60 to 90 Minutes</div>
+      <ul class="workflow-steps">
+        <li><strong>Start slow cooker / oven items first</strong> — they cook while you prep other things</li>
+        <li><strong>Cook grains in bulk</strong> — rice, quinoa, or pasta (enough for 3–4 meals)</li>
+        <li><strong>Roast a large batch of vegetables</strong> — sheet pan at 425°F for 20 minutes</li>
+        <li><strong>Cook protein</strong> — grill, bake, or pan-sear enough chicken / beef / tofu for 3–4 days</li>
+        <li><strong>Chop raw vegetables</strong> — for salads, snacks, stir-fries later in the week</li>
+        <li><strong>Assemble grab-and-go breakfasts</strong> — overnight oats, smoothie bags, egg muffins</li>
+        <li><strong>Portion into containers</strong> — label with contents and date</li>
+      </ul>
+    </div>
+
+    <div class="workflow-phase" style="margin-bottom:0;">
+      <div class="phase-title">Container Tips</div>
+      <ul class="container-tips">
+        <li>Glass containers for anything reheated — no plastic in the microwave</li>
+        <li>Mason jars for overnight oats, salads, and soups</li>
+        <li>Small containers for sauces and dressings — keep them separate</li>
+        <li>Label everything with masking tape and a marker: "Chicken Stir-Fry — Wed"</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ═══════════════════════════════ FORMULA REFERENCE ═══════════════════════════════ -->
+  <div style="margin-bottom:22px;">
+    <div class="section-label">Formulas</div>
+    <h2 class="section-title">Key Formula Reference</h2>
+    <p style="color:#64748b;font-size:0.9rem;margin-bottom:22px;">Copy these exactly into your Notion formula fields. All formulas are pre-built in the template.</p>
+  </div>
+
+  <div class="formula-card">
+    <div class="formula-item">
+      <div class="formula-name">Total Recipe Time</div>
+      <div class="formula-code">prop("Prep Time") + prop("Cook Time")</div>
+      <div class="formula-note">Automatically sums Prep Time + Cook Time into the Total Time field.</div>
+    </div>
+
+    <div class="formula-item">
+      <div class="formula-name">Time Category</div>
+      <div class="formula-code">if(
+  prop("Total Time") &lt;= 15, "15 min or less",
+  if(
+    prop("Total Time") &lt;= 30, "30 min or less",
+    if(
+      prop("Total Time") &lt;= 60, "1 hour or less",
+      "1+ hours"
+    )
+  )
+)</div>
+      <div class="formula-note">Buckets each recipe into a time category for easy filtering. Powers the "Quick Meals" view.</div>
+    </div>
+
+    <div class="formula-item">
+      <div class="formula-name">Cost per Serving (optional)</div>
+      <div class="formula-code">if(prop("Servings") > 0, prop("Total Recipe Cost") / prop("Servings"), 0)</div>
+      <div class="formula-note">Requires adding a "Total Recipe Cost" number property. Useful for budget tracking.</div>
+    </div>
+
+    <div class="formula-item">
+      <div class="formula-name">Weekly Calorie Average</div>
+      <div class="formula-note" style="color:#93c5fd;">Create a filtered view of Meal Plans for the current week. Sum the Calories rollup column and divide by 7. No formula needed — use Notion's built-in column calculations.</div>
+    </div>
+
+    <div class="formula-item">
+      <div class="formula-name">Grocery Cost Estimate</div>
+      <div class="formula-note" style="color:#93c5fd;">Create a filtered view of Grocery Lists for the current week. Sum the Estimated Cost property using Notion's column sum calculation at the bottom of the table.</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ═══════════════════════════════ QUICK-START GUIDE ═══════════════════════════════ -->
+  <div style="margin-bottom:22px;">
+    <div class="section-label">Quick-Start Guide</div>
+    <h2 class="section-title">6 Steps to Get Going</h2>
+    <p style="color:#64748b;font-size:0.9rem;margin-bottom:22px;">Follow these steps in order the first time you use the template. Takes about 30–45 minutes total.</p>
+  </div>
+
+  <div class="quickstart-steps">
+
+    <div class="qs-step">
+      <div class="qs-num">1</div>
+      <div class="qs-content">
+        <h4>Add Your First 10 Recipes</h4>
+        <ul>
+          <li>Open the <strong>Recipes</strong> database</li>
+          <li>Start with 10 recipes your household already makes and enjoys</li>
+          <li>Fill in the full details: ingredients, instructions, nutrition info, prep/cook times</li>
+          <li>Tag with dietary preferences and cuisine type</li>
+          <li>Rate them based on past experience</li>
+          <li>The 15 starter recipes are already loaded — keep, modify, or delete them</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qs-step">
+      <div class="qs-num">2</div>
+      <div class="qs-content">
+        <h4>Build Your First Weekly Meal Plan</h4>
+        <ul>
+          <li>Open the <strong>Meal Plans</strong> database</li>
+          <li>Create entries for each meal slot you want to plan (e.g., Mon–Fri dinners, all breakfasts)</li>
+          <li>Link each entry to a Recipe from your database</li>
+          <li>For meals you're not planning (eating out, leftovers), use the Custom Meal text field</li>
+          <li>Check "Prep Required" for any meals that need advance preparation</li>
+          <li>Use the "This Week" view to see your plan at a glance</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qs-step">
+      <div class="qs-num">3</div>
+      <div class="qs-content">
+        <h4>Generate Your Grocery List</h4>
+        <ul>
+          <li>Open the <strong>Grocery Lists</strong> database</li>
+          <li>Review your planned recipes for the week</li>
+          <li>Add each ingredient you need to buy, organized by Store Section</li>
+          <li>Check "Have It" for items already in your pantry</li>
+          <li>Set quantities based on servings needed</li>
+          <li>Use the "Shopping Mode" view on your phone at the store</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qs-step">
+      <div class="qs-num">4</div>
+      <div class="qs-content">
+        <h4>Do Your Prep Session</h4>
+        <ul>
+          <li>Check the Prep List view in Meal Plans for items flagged as Prep Required</li>
+          <li>Follow the Sunday Prep Workflow above</li>
+          <li>Update Meal Plan entries to "Prepped" status as you complete them</li>
+          <li>Store prepped items with labels</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qs-step">
+      <div class="qs-num">5</div>
+      <div class="qs-content">
+        <h4>Cook and Track Through the Week</h4>
+        <ul>
+          <li>Each day, check your Meal Plan for what's on the menu</li>
+          <li>After cooking, update the status to "Cooked"</li>
+          <li>If you swap a meal (made something different), update the entry</li>
+          <li>Rate new recipes after trying them — this builds your personal favorites over time</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qs-step">
+      <div class="qs-num">6</div>
+      <div class="qs-content">
+        <h4>Find Your Weekly Rhythm</h4>
+        <div class="rhythm-grid" style="margin-top:10px;">
+          <div class="rhythm-day"><span class="rd-day">Sat</span><div class="rd-task">Browse recipes, decide next week's plan</div></div>
+          <div class="rhythm-day"><span class="rd-day">Sun AM</span><div class="rd-task">Build grocery list, go shopping</div></div>
+          <div class="rhythm-day"><span class="rd-day">Sun PM</span><div class="rd-task">Prep session (60–90 min)</div></div>
+          <div class="rhythm-day"><span class="rd-day">Daily</span><div class="rd-task">Check the plan, cook, enjoy</div></div>
+          <div class="rhythm-day"><span class="rd-day">Fri</span><div class="rd-task">Review the week — what worked? What to change?</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /quickstart-steps -->
+
+  <div class="pro-tips-card">
+    <h4>Pro Tips</h4>
+    <ul>
+      <li>Start small — plan just dinners for the first 2 weeks, then add breakfasts and lunches</li>
+      <li>Use the "Haven't Made Recently" view to rediscover good recipes you've forgotten about</li>
+      <li>Duplicate last week's meal plan and swap 2–3 meals instead of building from scratch</li>
+      <li>Batch cook proteins on Sunday — grilled chicken works in bowls, wraps, salads, and stir-fries all week</li>
+      <li>Keep a "Snack Prep" section for cut vegetables, hummus portions, trail mix bags, and hard-boiled eggs</li>
+      <li>Use the Freezer Friendly filter to build a freezer stash — future you will be grateful</li>
+      <li>Share the workspace with your partner or family so everyone knows the plan</li>
+      <li>Add recipes as you discover them — even if you don't plan to make them this week, save them for later</li>
+    </ul>
+  </div>
+
+  <!-- ─── Footer ─── -->
+  <div class="page-footer">
+    <p>Made with love by <strong>Girl Gone AI</strong> &nbsp;·&nbsp; girlgoneai.com</p>
+    <p style="margin-top:4px;">Your personal AI toolkit for a smarter, more organized life.</p>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>

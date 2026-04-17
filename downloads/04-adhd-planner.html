@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADHD Daily Planner &amp; Focus System — Girl Gone AI</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #1e1e2e;
+      background: #f5f6fa;
+    }
+
+    /* ── Brand header ── */
+    .brand-header {
+      background: #2563eb;
+      color: #fff;
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(37,99,235,0.18);
+    }
+    .brand-header .logo {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .brand-header .logo span {
+      opacity: 0.75;
+      font-weight: 400;
+      font-size: 0.9rem;
+      margin-left: 12px;
+      letter-spacing: 0;
+    }
+    .brand-header .badge {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.78rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    /* ── Document title block ── */
+    .doc-title {
+      margin-bottom: 40px;
+      padding-bottom: 28px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .doc-title h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #111827;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+    }
+    .doc-title .subtitle {
+      margin-top: 6px;
+      font-size: 1rem;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    /* ── Headings ── */
+    h1 { font-size: 1.7rem; font-weight: 800; color: #111827; margin: 40px 0 16px; }
+    h2 { font-size: 1.3rem; font-weight: 700; color: #1e293b; margin: 36px 0 12px; }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #2563eb;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin: 28px 0 10px;
+    }
+    h4 { font-size: 0.95rem; font-weight: 700; color: #374151; margin: 18px 0 6px; }
+
+    /* ── Section headers (full-bleed accent) ── */
+    .section-header {
+      background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 8px;
+      margin: 48px 0 24px;
+    }
+    .section-header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Paragraphs & lists ── */
+    p { margin-bottom: 12px; }
+
+    ul, ol {
+      margin: 8px 0 14px 0;
+      padding-left: 0;
+      list-style: none;
+    }
+    ul li, ol li {
+      position: relative;
+      padding-left: 22px;
+      margin-bottom: 5px;
+    }
+    ul li::before {
+      content: "•";
+      position: absolute;
+      left: 6px;
+      color: #2563eb;
+      font-weight: 700;
+    }
+    ol { counter-reset: list-counter; }
+    ol li { counter-increment: list-counter; }
+    ol li::before {
+      content: counter(list-counter) ".";
+      position: absolute;
+      left: 0;
+      color: #2563eb;
+      font-weight: 700;
+    }
+
+    strong { font-weight: 700; color: #111827; }
+    em { font-style: italic; color: #4b5563; }
+
+    /* ── Horizontal rule / divider ── */
+    hr {
+      border: none;
+      border-top: 1.5px solid #e5e7eb;
+      margin: 28px 0;
+    }
+
+    /* ── Blockquote / callout ── */
+    blockquote {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 18px 0;
+      color: #1e40af;
+    }
+    blockquote p { margin: 0 0 6px; }
+    blockquote p:last-child { margin: 0; }
+    blockquote strong { color: #1d4ed8; }
+
+    /* ── Code / text blocks ── */
+    pre {
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px 18px;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      font-size: 0.85rem;
+      color: #374151;
+      white-space: pre-wrap;
+      margin: 10px 0 16px;
+      min-height: 80px;
+    }
+    code {
+      background: #f3f4f6;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.85em;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin: 14px 0 20px; border-radius: 8px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    thead tr {
+      background: #2563eb;
+      color: #fff;
+    }
+    thead th {
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    tbody tr { border-bottom: 1px solid #f1f2f6; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:nth-child(even) { background: #f8f9ff; }
+    tbody tr:hover { background: #eff6ff; }
+    td { padding: 9px 12px; vertical-align: middle; }
+    td:first-child { font-weight: 600; color: #374151; }
+
+    /* ── Checkbox styled items ── */
+    .checklist { list-style: none; padding: 0; margin: 8px 0 14px; }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 5px 0;
+      padding-left: 0;
+    }
+    .checklist li::before { display: none; }
+    .checkbox-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      min-width: 17px;
+      border: 2px solid #9ca3af;
+      border-radius: 3px;
+      background: #fff;
+      margin-top: 3px;
+    }
+
+    /* ── Energy dot badges ── */
+    .energy-high  { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; margin-right: 4px; vertical-align: middle; }
+    .energy-med   { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #eab308; margin-right: 4px; vertical-align: middle; }
+    .energy-low   { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #16a34a; margin-right: 4px; vertical-align: middle; }
+    .energy-break { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #9ca3af; margin-right: 4px; vertical-align: middle; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 12px;
+      padding: 2px 9px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-high  { background: #fee2e2; color: #b91c1c; }
+    .badge-med   { background: #fef9c3; color: #92400e; }
+    .badge-low   { background: #dcfce7; color: #166534; }
+    .badge-break { background: #f3f4f6; color: #6b7280; }
+
+    /* ── Sub-section label ── */
+    .sub-label {
+      display: inline-block;
+      background: #eff6ff;
+      color: #2563eb;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    /* ── Decision tree boxes ── */
+    .decision-item {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-left: 4px solid #2563eb;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+    }
+    .decision-item h4 {
+      color: #2563eb;
+      margin-bottom: 6px;
+    }
+    .decision-item p, .decision-item ul { margin: 0; }
+    .decision-item ul li { margin-bottom: 3px; }
+
+    /* ── Callout box (non-blockquote variant) ── */
+    .callout {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid #16a34a;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      color: #14532d;
+    }
+    .callout strong { color: #166534; }
+
+    /* ── Info box ── */
+    .info-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+    .info-box h4 { margin-top: 0; color: #1e293b; }
+
+    /* ── Celebration section ── */
+    .celebration {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 24px 26px;
+      margin: 20px 0;
+    }
+    .celebration h3 { color: #1d4ed8; }
+
+    /* ── Philosophy Q&A ── */
+    .qa-item {
+      margin-bottom: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #f1f2f6;
+    }
+    .qa-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .qa-item .question {
+      font-weight: 700;
+      color: #1e293b;
+      font-size: 0.97rem;
+      margin-bottom: 6px;
+    }
+
+    /* ── Database property list ── */
+    .prop-list { margin: 10px 0 16px; }
+    .prop-list li {
+      padding: 6px 12px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 0.87rem;
+    }
+    .prop-list li::before { display: none; }
+    .prop-list li .prop-name {
+      font-weight: 700;
+      color: #2563eb;
+    }
+
+    /* ── Quote highlight ── */
+    .quote-highlight {
+      text-align: center;
+      padding: 24px 20px;
+      color: #6b7280;
+      font-style: italic;
+      font-size: 1.05rem;
+    }
+    .quote-highlight strong { color: #374151; font-style: normal; }
+
+    /* ── Utility ── */
+    .mt-0 { margin-top: 0 !important; }
+    .mb-sm { margin-bottom: 8px; }
+    .text-muted { color: #6b7280; font-size: 0.87rem; }
+    .section-note { color: #6b7280; font-size: 0.87rem; font-style: italic; margin-bottom: 18px; }
+
+    /* ── PRINT ── */
+    @media print {
+      .brand-header { display: none !important; }
+      body { background: #fff; color: #000; font-size: 11pt; }
+      .page { padding: 20px 0; max-width: 100%; }
+      .section-header { background: none !important; border: 2px solid #000; color: #000 !important; }
+      .section-header h1 { color: #000 !important; }
+      blockquote { background: none; border-left: 3px solid #000; color: #000; }
+      .decision-item { border-left-color: #000; background: none; border-color: #ccc; }
+      .callout { background: none; border-color: #000; color: #000; }
+      .celebration { background: none; border: 1px solid #ccc; }
+      .info-box { background: none; border: 1px solid #ccc; }
+      table { box-shadow: none; font-size: 9pt; }
+      thead tr { background: #e5e5e5 !important; color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      tbody tr:nth-child(even) { background: #f5f5f5 !important; }
+      tbody tr:hover { background: none !important; }
+      .table-wrap { box-shadow: none; page-break-inside: avoid; }
+      pre { background: #f5f5f5; border: 1px solid #ccc; min-height: 60px; }
+      h1, h2, h3, h4 { page-break-after: avoid; }
+      .decision-item, .callout, .info-box, blockquote { page-break-inside: avoid; }
+      @page { margin: 1.5cm 1.8cm; size: A4; }
+      .badge-high, .badge-med, .badge-low, .badge-break { background: none; color: #000; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Brand Header -->
+  <header class="brand-header" aria-label="Girl Gone AI brand header">
+    <div class="logo">Girl Gone AI <span>Free Resource Library</span></div>
+    <div class="badge">Printable Download</div>
+  </header>
+
+  <main class="page">
+
+    <!-- Document Title -->
+    <div class="doc-title">
+      <h1>ADHD Daily Planner &amp; Focus System</h1>
+      <div class="subtitle">A Notion Template Built for ADHD Brains</div>
+    </div>
+
+    <!-- Quick Start Callout -->
+    <blockquote>
+      <p><strong>QUICK START — Read This First (Takes 2 Minutes)</strong></p>
+      <ol>
+        <li>Duplicate this template to your Notion workspace</li>
+        <li>Open TODAY'S page (it's in the Daily Pages database)</li>
+        <li>Start with the Brain Dump — just write everything in your head, no filter</li>
+        <li>Pick your Top 3 for the day (only 3, seriously)</li>
+        <li>Set your first Focus Session timer</li>
+      </ol>
+      <p style="margin-top:10px;">That's it. Don't read the rest yet. Go do something. Come back when you're ready to explore more.</p>
+    </blockquote>
+
+    <hr />
+
+    <!-- How This Is Different -->
+    <h2>How This Is Different</h2>
+    <p>Most planners were built for neurotypical brains. This one wasn't. No 47-step morning routines. No guilt-trip streak counters. No walls of text. This system works <em>with</em> how your brain actually operates — bursts of energy, hyperfocus spirals, forgetting things exist, and needing a win at every turn.</p>
+    <p><strong>Rules of this system:</strong></p>
+    <ul>
+      <li><strong>You can't fail it.</strong> If you skipped a week, just come back. No catching up required.</li>
+      <li><strong>Streaks are optional.</strong> Consistency matters more than perfection.</li>
+      <li><strong>Done is better than perfect.</strong> A half-filled day page is better than a blank one.</li>
+    </ul>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- SECTION 1 -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="section-header">
+      <h1>Section 1: Daily Page Template</h1>
+    </div>
+
+    <p class="section-note">Duplicate this page each day, or use the Daily Pages database below which auto-generates them.</p>
+
+    <h2>Daily Page — [Date]</h2>
+
+    <!-- Vibe Check -->
+    <h3>Today's Vibe Check</h3>
+    <p class="text-muted">How are you walking in today?</p>
+    <ul class="checklist">
+      <li><span class="checkbox-box"></span> Foggy / slow start</li>
+      <li><span class="checkbox-box"></span> Anxious / scattered</li>
+      <li><span class="checkbox-box"></span> Decent / manageable</li>
+      <li><span class="checkbox-box"></span> Energized / on it</li>
+      <li><span class="checkbox-box"></span> Hyperfocus mode (ride it!)</li>
+    </ul>
+
+    <hr />
+
+    <!-- Brain Dump -->
+    <h3>Brain Dump Zone</h3>
+    <p><em>Get it out of your head and onto the page. Thoughts, worries, tasks, random ideas, everything. No organizing yet. Just dump.</em></p>
+    <pre>[ Brain Dump — write freely below ]
+
+
+
+
+</pre>
+
+    <hr />
+
+    <!-- Top 3 Priorities -->
+    <h3>Top 3 Priorities</h3>
+    <blockquote><p>Only 3. Not 10. Not 5. <strong>THREE.</strong> Your brain can hold 3.</p></blockquote>
+    <p class="text-muted">If today ends and you did only these, the day was a win.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Priority</th>
+            <th>Energy Needed</th>
+            <th>Done?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>&nbsp;</td>
+            <td><span class="badge badge-high"><span class="energy-high"></span>High</span></td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>&nbsp;</td>
+            <td><span class="badge badge-med"><span class="energy-med"></span>Medium</span></td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>&nbsp;</td>
+            <td><span class="badge badge-low"><span class="energy-low"></span>Low</span></td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Which one first?</strong> → Start with the one that matches your current energy level.</p>
+
+    <hr />
+
+    <!-- Time Blocks -->
+    <h3>Time Blocks</h3>
+    <blockquote><p>Fill in only what you'll realistically use. Blank blocks are fine.</p></blockquote>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Block</th>
+            <th>Energy</th>
+            <th>Task / Focus</th>
+            <th>Done?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>7:00–8:00</td>
+            <td>Morning</td>
+            <td><span class="badge badge-low"><span class="energy-low"></span>Low</span></td>
+            <td>Morning routine / ease in</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>8:00–9:00</td>
+            <td>Work</td>
+            <td><span class="badge badge-high"><span class="energy-high"></span>High</span></td>
+            <td>&nbsp;</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>9:00–9:15</td>
+            <td>BREAK</td>
+            <td><span class="badge badge-break"><span class="energy-break"></span>—</span></td>
+            <td>Step away from the screen</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>9:15–10:30</td>
+            <td>Work</td>
+            <td><span class="badge badge-high"><span class="energy-high"></span>High</span></td>
+            <td>&nbsp;</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>10:30–11:00</td>
+            <td>Work</td>
+            <td><span class="badge badge-med"><span class="energy-med"></span>Medium</span></td>
+            <td>&nbsp;</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>11:00–11:15</td>
+            <td>BREAK</td>
+            <td><span class="badge badge-break"><span class="energy-break"></span>—</span></td>
+            <td>Move your body</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>11:15–12:00</td>
+            <td>Work</td>
+            <td><span class="badge badge-med"><span class="energy-med"></span>Medium</span></td>
+            <td>&nbsp;</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>12:00–1:00</td>
+            <td>Lunch</td>
+            <td><span class="badge badge-low"><span class="energy-low"></span>Low</span></td>
+            <td>Actual lunch, no screens if possible</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>1:00–2:30</td>
+            <td>Work</td>
+            <td><span class="badge badge-med"><span class="energy-med"></span>Medium</span></td>
+            <td>&nbsp;</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>2:30–2:45</td>
+            <td>BREAK</td>
+            <td><span class="badge badge-break"><span class="energy-break"></span>—</span></td>
+            <td>Snack / water / walk</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>2:45–4:00</td>
+            <td>Work</td>
+            <td><span class="badge badge-low"><span class="energy-low"></span>Low</span></td>
+            <td>Admin / emails / easy tasks</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>4:00–5:00</td>
+            <td>Wrap-up</td>
+            <td><span class="badge badge-low"><span class="energy-low"></span>Low</span></td>
+            <td>Review, prep tomorrow</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+          <tr>
+            <td>Evening</td>
+            <td>Open</td>
+            <td><span class="badge badge-break"><span class="energy-break"></span>—</span></td>
+            <td>&nbsp;</td>
+            <td><span class="checkbox-box"></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box">
+      <h4>Energy Key</h4>
+      <ul>
+        <li><span class="badge badge-high"><span class="energy-high"></span>High Energy</span> — Deep work, creative projects, hard decisions, complex tasks</li>
+        <li><span class="badge badge-med"><span class="energy-med"></span>Medium Energy</span> — Meetings, writing, routine work, moderate thinking</li>
+        <li><span class="badge badge-low"><span class="energy-low"></span>Low Energy</span> — Email, admin, filing, easy tasks, passive learning</li>
+      </ul>
+    </div>
+
+    <hr />
+
+    <!-- Focus Session Log -->
+    <h3>Focus Session Log</h3>
+    <blockquote><p>Track your pomodoro-style sessions here. 25 min on, 5 min break. After 4 sessions, take a 20–30 min break.</p></blockquote>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Session</th>
+            <th>Start Time</th>
+            <th>Task</th>
+            <th>Duration</th>
+            <th>Break Taken?</th>
+            <th>Rating</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>25 min</td>
+            <td><span class="checkbox-box"></span> 5 min</td>
+            <td>⭐⭐⭐</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>25 min</td>
+            <td><span class="checkbox-box"></span> 5 min</td>
+            <td>⭐⭐⭐</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>25 min</td>
+            <td><span class="checkbox-box"></span> 5 min</td>
+            <td>⭐⭐⭐</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>25 min</td>
+            <td><span class="checkbox-box"></span> 30 min</td>
+            <td>⭐⭐⭐</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>25 min</td>
+            <td><span class="checkbox-box"></span> 5 min</td>
+            <td>⭐⭐⭐</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>25 min</td>
+            <td><span class="checkbox-box"></span> 5 min</td>
+            <td>⭐⭐⭐</td>
+            <td>&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box">
+      <h4>Break Ideas — pick one, actually do it</h4>
+      <ul>
+        <li>Stand up and stretch for 2 minutes</li>
+        <li>Get water or a snack</li>
+        <li>Walk to another room and back</li>
+        <li>Look out a window for 5 minutes</li>
+        <li>Do 10 jumping jacks</li>
+        <li>Text a friend something random</li>
+      </ul>
+    </div>
+
+    <hr />
+
+    <!-- Medication Tracker -->
+    <h3>Medication / Supplement Tracker</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Medication / Supplement</th>
+            <th>Dose</th>
+            <th>Taken?</th>
+            <th>Mood 1 hr later</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Morning</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td><span class="checkbox-box"></span></td>
+            <td>😶 😐 🙂 😊 😄</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>Afternoon</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td><span class="checkbox-box"></span></td>
+            <td>😶 😐 🙂 😊 😄</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>Evening</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td><span class="checkbox-box"></span></td>
+            <td>😶 😐 🙂 😊 😄</td>
+            <td>&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-muted"><strong>Mood Scale:</strong> 😶 Awful &nbsp;/&nbsp; 😐 Meh &nbsp;/&nbsp; 🙂 Okay &nbsp;/&nbsp; 😊 Good &nbsp;/&nbsp; 😄 Great</p>
+
+    <hr />
+
+    <!-- Hyperfocus Log -->
+    <h3>Hyperfocus Log</h3>
+    <p><em>Did you fall into a hyperfocus spiral today? Log it here — no judgment, just awareness.</em></p>
+
+    <h4>What I hyperfocused on:</h4>
+    <pre>[ Topic / activity ]</pre>
+
+    <h4>How long (approximate):</h4>
+    <pre style="min-height:44px;">&nbsp;</pre>
+
+    <h4>Was it useful or a detour?</h4>
+    <ul class="checklist">
+      <li><span class="checkbox-box"></span> Useful — it was actually productive</li>
+      <li><span class="checkbox-box"></span> Mixed — some value, some rabbit hole</li>
+      <li><span class="checkbox-box"></span> Full detour — I need to redirect</li>
+    </ul>
+
+    <h4>Redirect note (if needed): What do I need to get back to?</h4>
+    <pre>[ Write it here ]</pre>
+
+    <hr />
+
+    <!-- Sensory Checklist -->
+    <h3>Sensory / Environment Checklist</h3>
+    <p><em>A dysregulated environment = a dysregulated brain. Check before you start.</em></p>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 14px 0;">
+      <div class="info-box" style="margin:0;">
+        <h4>Noise</h4>
+        <ul class="checklist">
+          <li><span class="checkbox-box"></span> Headphones on / noise canceling active</li>
+          <li><span class="checkbox-box"></span> Background music / brown noise playing</li>
+          <li><span class="checkbox-box"></span> Too loud → find quieter spot or use earplugs</li>
+          <li><span class="checkbox-box"></span> Quiet enough as-is</li>
+        </ul>
+      </div>
+      <div class="info-box" style="margin:0;">
+        <h4>Lighting</h4>
+        <ul class="checklist">
+          <li><span class="checkbox-box"></span> Natural light (ideal)</li>
+          <li><span class="checkbox-box"></span> Bright enough, not glaring</li>
+          <li><span class="checkbox-box"></span> Adjusted screen brightness</li>
+        </ul>
+      </div>
+      <div class="info-box" style="margin:0;">
+        <h4>Physical</h4>
+        <ul class="checklist">
+          <li><span class="checkbox-box"></span> Fidget tool within reach</li>
+          <li><span class="checkbox-box"></span> Comfortable temperature</li>
+          <li><span class="checkbox-box"></span> Not hungry</li>
+          <li><span class="checkbox-box"></span> Not thirsty (water nearby)</li>
+          <li><span class="checkbox-box"></span> Chair / posture okay</li>
+        </ul>
+      </div>
+      <div class="info-box" style="margin:0;">
+        <h4>Workspace</h4>
+        <ul class="checklist">
+          <li><span class="checkbox-box"></span> Cleared to working minimum (not perfectly clean, just functional)</li>
+          <li><span class="checkbox-box"></span> Phone face down or in another room</li>
+          <li><span class="checkbox-box"></span> Notifications off / focus mode on</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- Stuck Decision Tree -->
+    <h3>"Stuck?" Decision Tree</h3>
+    <p><em>Can't start? Can't continue? Run through this.</em></p>
+
+    <div class="info-box">
+      <h4>Step 1: What type of stuck is this?</h4>
+      <ul>
+        <li>A) I don't know where to start</li>
+        <li>B) The task feels too big</li>
+        <li>C) I'm bored / avoidant</li>
+        <li>D) I'm overwhelmed / anxious</li>
+        <li>E) My brain just won't engage</li>
+      </ul>
+    </div>
+
+    <div class="decision-item">
+      <h4>If A — Don't know where to start</h4>
+      <p>→ Write one sentence: <em>"The very first physical action for this task is ___."</em></p>
+      <p>→ Do only that one action. Nothing else counts yet.</p>
+    </div>
+
+    <div class="decision-item">
+      <h4>If B — Task feels too big</h4>
+      <p>→ Break it into 3 sub-tasks right now:</p>
+      <ul>
+        <li>Sub-task 1: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+        <li>Sub-task 2: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+        <li>Sub-task 3: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+      </ul>
+      <p>→ Start with sub-task 1 only.</p>
+    </div>
+
+    <div class="decision-item">
+      <h4>If C — Bored / avoidant</h4>
+      <p>→ Option 1: <strong>Body double</strong> — find someone to work near (in person or via video)</p>
+      <p>→ Option 2: <strong>Race the clock</strong> — set a 10-min timer, see how much you can do</p>
+      <p>→ Option 3: <strong>Make it interesting</strong> — music, different location, standing up</p>
+    </div>
+
+    <div class="decision-item">
+      <h4>If D — Overwhelmed / anxious</h4>
+      <p>→ Stop. Do a 5-minute brain dump (write every worry)</p>
+      <p>→ Then pick ONE thing from the list. Just one.</p>
+      <p>→ If still overwhelmed, take a 10-min break first — walk, breathe, step outside</p>
+    </div>
+
+    <div class="decision-item">
+      <h4>If E — Brain won't engage</h4>
+      <p>→ Check the basics: water? food? sleep last night?</p>
+      <p>→ Try a 5-min "warm-up" task (something very easy and satisfying)</p>
+      <p>→ Change location — a different chair or room can reset</p>
+      <p>→ Accept it may be a low-output day. Do what you can. It's enough.</p>
+    </div>
+
+    <hr />
+
+    <!-- Executive Function Support -->
+    <h3>Executive Function Support</h3>
+
+    <div class="info-box">
+      <h4>Task Initiation Prompts</h4>
+      <p>Before starting a task, answer one of these out loud or in writing:</p>
+      <ul>
+        <li>"The first thing I will physically do is..."</li>
+        <li>"I will work on this for just [X] minutes..."</li>
+        <li>"The only thing that matters right now is..."</li>
+      </ul>
+    </div>
+
+    <div class="info-box">
+      <h4>Transition Cues</h4>
+      <p>Struggling to shift from one task to another?</p>
+      <ul>
+        <li>Set a 5-min warning timer before the transition</li>
+        <li>Write one sentence ending the current task: "I stopped here: ___"</li>
+        <li>Say out loud: "I am switching to [next task] now."</li>
+        <li>Do a physical reset: stand up, shake it out, sit back down</li>
+      </ul>
+    </div>
+
+    <hr />
+
+    <!-- Celebration Section -->
+    <div class="celebration">
+      <h3>Done! Celebration Section</h3>
+      <p><em>You finished something today. That matters. Mark it here.</em></p>
+
+      <h4>Things I completed today (big or tiny):</h4>
+      <pre style="background:#fff; border-color:#bfdbfe; min-height:100px;">1.
+2.
+3.
+4.
+5.</pre>
+
+      <h4>Win of the day (pick one thing you're proud of):</h4>
+      <pre style="background:#fff; border-color:#bfdbfe;">[ Write it here ]</pre>
+
+      <h4>One kind thing to say to yourself about today:</h4>
+      <pre style="background:#fff; border-color:#bfdbfe;">[ Write it here ]</pre>
+
+      <div class="quote-highlight">
+        <strong>"Progress, not perfection. You showed up."</strong>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- SECTION 2 -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="section-header">
+      <h1>Section 2: Weekly Review</h1>
+    </div>
+
+    <p class="section-note">Do this once a week — Friday evening or Sunday morning. Takes 10–15 minutes.</p>
+
+    <h2>Weekly Review — Week of [Date]</h2>
+
+    <h3>Wins This Week</h3>
+    <p><em>What went well? What are you proud of? Big things, small things, all of it.</em></p>
+    <pre>1.
+2.
+3.
+4.
+5.</pre>
+
+    <h3>Struggles This Week</h3>
+    <p><em>Where did things break down? Be honest, not harsh.</em></p>
+    <pre>[ Write freely ]</pre>
+
+    <h3>Patterns I Noticed</h3>
+    <p><em>Did you notice anything about when you work best? When you struggle? What triggered good days vs bad days?</em></p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pattern Observed</th>
+            <th>What It Tells Me</th>
+            <th>What to Try Next Week</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Medication / Supplement Notes</h3>
+    <p><em>Did your medication timing work? Any side effects? Anything to adjust?</em></p>
+    <pre>[ Notes for your doctor or yourself ]</pre>
+
+    <h3>Adjustments for Next Week</h3>
+    <p><em>Based on this week, what ONE thing will you do differently?</em></p>
+    <pre>[ One thing only ]</pre>
+
+    <h3>Energy Audit</h3>
+    <p><em>Which days/times were you most effective? Least effective?</em></p>
+    <div class="info-box">
+      <p><strong>High energy days/times:</strong></p>
+      <pre style="min-height:44px;">&nbsp;</pre>
+      <p><strong>Low energy days/times:</strong></p>
+      <pre style="min-height:44px;">&nbsp;</pre>
+      <p><strong>What I'll do with that information:</strong></p>
+      <pre style="min-height:44px;">&nbsp;</pre>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- SECTION 3 -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="section-header">
+      <h1>Section 3: Habit Tracker</h1>
+    </div>
+
+    <blockquote>
+      <p><strong>ADHD Habit Tracker Rules:</strong></p>
+      <ul>
+        <li>Streaks are a nice bonus, not the goal</li>
+        <li>Missing a day does NOT reset your progress as a person</li>
+        <li>Aim for "more days than not" not "every single day"</li>
+        <li>Start with 2–3 habits max. Add more only when those feel automatic.</li>
+      </ul>
+    </blockquote>
+
+    <h2>Habit Tracker — [Month / Week]</h2>
+
+    <h3>My Current Habits (2–3 only to start)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Habit</th>
+            <th>Why It Matters to Me</th>
+            <th>Trigger (what reminds me)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Weekly Grid</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Habit</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+            <th>Sun</th>
+            <th>Days Completed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>&nbsp;</td>
+            <td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td>
+            <td>/7</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td>
+            <td>/7</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td><td>✓/✗</td>
+            <td>/7</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>This week's habit score:</strong> ___ /21</p>
+    <p><strong>Non-judgmental reflection:</strong> What made it easy or hard this week?</p>
+    <pre>[ Just notice, don't beat yourself up ]</pre>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- SECTION 4 -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="section-header">
+      <h1>Section 4: Daily Pages Database</h1>
+    </div>
+
+    <p class="section-note">How to use: Create a new entry for each day. Each entry uses the Daily Page template above.</p>
+
+    <h3>Database Properties</h3>
+    <ul class="prop-list">
+      <li><span class="prop-name">Date</span> — date</li>
+      <li><span class="prop-name">Day of Week</span> — formula</li>
+      <li><span class="prop-name">Vibe Check</span> — select: Foggy / Anxious / Decent / Energized / Hyperfocus</li>
+      <li><span class="prop-name">Top 3 Completed</span> — number (0–3)</li>
+      <li><span class="prop-name">Focus Sessions</span> — number</li>
+      <li><span class="prop-name">Medication Taken</span> — checkbox</li>
+      <li><span class="prop-name">Win of the Day</span> — text</li>
+      <li><span class="prop-name">Overall Day Rating</span> — select: 1 / 2 / 3 / 4 / 5</li>
+    </ul>
+
+    <h3>Views</h3>
+    <ul>
+      <li><strong>Table view</strong> — all days in order</li>
+      <li><strong>Calendar view</strong> — see your month at a glance</li>
+      <li><strong>Gallery view</strong> — see your wins</li>
+      <li><strong>Filter: "Good Days Only"</strong> — filter by rating 4 or 5 to study your best days</li>
+    </ul>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- SECTION 5 -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="section-header">
+      <h1>Section 5: Goal Database</h1>
+    </div>
+
+    <p class="section-note">Keep your goals here. Link daily tasks to these goals so you always know WHY you're doing what you're doing.</p>
+
+    <h3>Database Properties</h3>
+    <ul class="prop-list">
+      <li><span class="prop-name">Goal Name</span> — title</li>
+      <li><span class="prop-name">Category</span> — select: Work / Health / Creative / Financial / Relationships / Learning / Other</li>
+      <li><span class="prop-name">Why It Matters</span> — text (the emotional reason, not just the logical one)</li>
+      <li><span class="prop-name">Deadline</span> — date</li>
+      <li><span class="prop-name">Status</span> — select: Not Started / In Progress / Stuck / Paused / Complete</li>
+      <li><span class="prop-name">Next Action</span> — text (the single next physical step)</li>
+      <li><span class="prop-name">Related Habits</span> — relation to Habit Tracker</li>
+    </ul>
+
+    <h3>Sample Entry</h3>
+    <div class="info-box">
+      <ul>
+        <li><strong>Goal Name:</strong> Finish freelance portfolio</li>
+        <li><strong>Category:</strong> Work</li>
+        <li><strong>Why It Matters:</strong> So I can quit the job that's draining me</li>
+        <li><strong>Deadline:</strong> [date]</li>
+        <li><strong>Status:</strong> In Progress</li>
+        <li><strong>Next Action:</strong> Write bio section (30 minutes, high energy)</li>
+      </ul>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- APPENDIX -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="section-header" style="background: linear-gradient(90deg, #1e293b 0%, #374151 100%);">
+      <h1>Appendix: ADHD Planning Philosophy</h1>
+    </div>
+
+    <div class="qa-item">
+      <div class="question">Why only 3 priorities?</div>
+      <p>The research and lived experience of ADHD consistently shows that long to-do lists increase cognitive load, trigger avoidance, and lead to decision paralysis. Three priorities fit in working memory. You can actually decide which to do first without spiraling.</p>
+    </div>
+
+    <div class="qa-item">
+      <div class="question">Why celebrate the small things?</div>
+      <p>ADHD brains are often running on a dopamine deficit. External celebrations — even self-generated ones — literally help regulate the reward system. The celebration section isn't fluff. It's neurological maintenance.</p>
+    </div>
+
+    <div class="qa-item">
+      <div class="question">Why is the guide so short?</div>
+      <p>Because you have ADHD and a long guide is the best way to ensure you never use the system. The goal is to get you doing, not reading about doing.</p>
+    </div>
+
+    <div class="qa-item">
+      <div class="question">What if I use this inconsistently?</div>
+      <p>Good. Inconsistent use of a helpful system beats consistent avoidance of a perfect one. Come back whenever you're ready. The template will be here.</p>
+    </div>
+
+    <div class="callout" style="margin-top: 40px;">
+      <p><strong>You've got this.</strong> The fact that you downloaded a planner means you're trying. That already counts.</p>
+      <p style="margin-top:8px;">— Girl Gone AI</p>
+    </div>
+
+  </main>
+
+</body>
+</html>

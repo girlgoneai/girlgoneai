@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://incomparable-cobbler-95551a.netlify.app/sitemap.xml

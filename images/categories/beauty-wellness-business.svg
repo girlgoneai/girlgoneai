@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#f9a8d4;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="240" rx="16" fill="url(#bg)"/>
+  <!-- Flower/beauty icon -->
+  <circle cx="200" cy="85" r="12" fill="white" opacity="0.9"/>
+  <ellipse cx="200" cy="55" rx="10" ry="18" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="1.5"/>
+  <ellipse cx="200" cy="115" rx="10" ry="18" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="1.5"/>
+  <ellipse cx="170" cy="85" rx="18" ry="10" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="1.5"/>
+  <ellipse cx="230" cy="85" rx="18" ry="10" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="1.5"/>
+  <ellipse cx="179" cy="64" rx="10" ry="16" fill="rgba(255,255,255,0.25)" stroke="white" stroke-width="1.5" transform="rotate(-45,179,64)"/>
+  <ellipse cx="221" cy="64" rx="10" ry="16" fill="rgba(255,255,255,0.25)" stroke="white" stroke-width="1.5" transform="rotate(45,221,64)"/>
+  <ellipse cx="179" cy="106" rx="10" ry="16" fill="rgba(255,255,255,0.25)" stroke="white" stroke-width="1.5" transform="rotate(45,179,106)"/>
+  <ellipse cx="221" cy="106" rx="10" ry="16" fill="rgba(255,255,255,0.25)" stroke="white" stroke-width="1.5" transform="rotate(-45,221,106)"/>
+  <!-- Sparkles -->
+  <circle cx="120" cy="60" r="3" fill="rgba(255,255,255,0.5)"/>
+  <circle cx="290" cy="50" r="2.5" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="305" cy="110" r="3" fill="rgba(255,255,255,0.5)"/>
+  <circle cx="105" cy="120" r="2" fill="rgba(255,255,255,0.4)"/>
+  <!-- Label -->
+  <text x="200" y="175" text-anchor="middle" fill="white" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="17" font-weight="600" opacity="0.95">Beauty &amp; Wellness Business</text>
+</svg>

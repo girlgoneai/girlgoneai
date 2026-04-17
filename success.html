@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed — Girl Gone AI</title>
+  <meta name="description" content="Thank you for your purchase!">
+  
+  <meta property="og:title" content="Order Confirmed — Girl Gone AI">
+  <meta property="og:description" content="Thank you for your purchase!">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://incomparable-cobbler-95551a.netlify.app/success.html">
+  <meta property="og:image" content="https://incomparable-cobbler-95551a.netlify.app/og-image.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Order Confirmed — Girl Gone AI">
+  <meta name="twitter:description" content="Thank you for your purchase!">
+  <link rel="canonical" href="https://incomparable-cobbler-95551a.netlify.app/success.html">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="logo">Girl Gone AI</a>
+    <nav>
+      <a href="/bundles.html">Bundles</a>
+      <a href="/free.html" style="margin-left:16px;">Free Downloads</a>
+      <a href="/" style="margin-left:16px;">Catalog</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="container product-page">
+    <div class="success-page" id="success-page">
+      <div class="success-icon">&#10003;</div>
+      <h1>Order Confirmed!</h1>
+      <p class="success-sub" id="success-message">Thank you for your purchase!</p>
+      <div class="success-details" id="success-details" style="display:none;">
+        <div class="success-product" id="success-product-name"></div>
+        <div class="success-amount" id="success-amount"></div>
+        <a href="#" class="buy-btn success-download-btn" id="download-link" style="display:none;">Download Your Product</a>
+      </div>
+      <a href="/" class="back-link" style="margin-top:32px;">&#8592; Browse more products</a>
+    </div>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 Girl Gone AI. All rights reserved.</p>
+  </div>
+</footer>
+<script src="/config.js"></script>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var sessionId = params.get('session_id');
+  if (!sessionId) return;
+
+  var apiUrl = (window.NOVOCLAW_CONFIG && window.NOVOCLAW_CONFIG.apiUrl) || '';
+  if (!apiUrl) return;
+
+  var url = apiUrl + '/api/checkout-session?session_id=' + encodeURIComponent(sessionId);
+
+  fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.error) return;
+
+    document.getElementById('success-message').textContent =
+      data.customerEmail
+        ? 'A confirmation has been sent to ' + data.customerEmail + '.'
+        : 'Your payment was successful.';
+
+    var details = document.getElementById('success-details');
+    details.style.display = '';
+
+    document.getElementById('success-product-name').textContent = data.productName || 'Your product';
+    document.getElementById('success-amount').textContent =
+      '$' + ((data.amountTotal || 0) / 100).toFixed(2) + ' ' + (data.currency || 'usd').toUpperCase();
+
+    if (data.productSlug && data.paymentStatus === 'paid') {
+      var dlLink = document.getElementById('download-link');
+      dlLink.href = apiUrl + '/api/download/' + encodeURIComponent(data.productSlug) + '?session_id=' + encodeURIComponent(sessionId);
+      dlLink.style.display = '';
+    }
+  }).catch(function() {});
+})();
+</script>
+</body>
+</html>

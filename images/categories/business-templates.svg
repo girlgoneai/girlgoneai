@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="240" rx="16" fill="url(#bg)"/>
+  <!-- Chart bars -->
+  <rect x="150" y="100" width="24" height="50" rx="4" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="1.5"/>
+  <rect x="188" y="75" width="24" height="75" rx="4" fill="rgba(255,255,255,0.4)" stroke="white" stroke-width="1.5"/>
+  <rect x="226" y="55" width="24" height="95" rx="4" fill="rgba(255,255,255,0.5)" stroke="white" stroke-width="1.5"/>
+  <!-- Trend line -->
+  <polyline points="140,115 175,95 210,70 250,50" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="250" cy="50" r="4" fill="white"/>
+  <!-- Grid lines -->
+  <line x1="140" y1="150" x2="260" y2="150" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  <!-- Sparkles -->
+  <circle cx="110" cy="65" r="3" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="300" cy="80" r="2.5" fill="rgba(255,255,255,0.5)"/>
+  <circle cx="290" cy="130" r="2" fill="rgba(255,255,255,0.3)"/>
+  <!-- Label -->
+  <text x="200" y="195" text-anchor="middle" fill="white" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="18" font-weight="600" opacity="0.95">Business Templates</text>
+</svg>

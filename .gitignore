@@ -1,0 +1,7 @@
+node_modules/
+.netlify/
+.env
+subscribers.json
+sales.json
+email/drip-queue.json
+.vercel-output.json

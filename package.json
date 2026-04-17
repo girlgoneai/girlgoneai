@@ -1,0 +1,16 @@
+{
+  "name": "novoclaw-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NovoClaw digital product catalog with Stripe checkout",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "drip": "node email/cli.js",
+    "drip:process": "node email/cli.js process",
+    "drip:status": "node email/cli.js status"
+  },
+  "dependencies": {
+    "stripe": "^17.0.0"
+  }
+}

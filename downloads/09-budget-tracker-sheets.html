@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Budget Tracker — Girl Gone AI</title>
+  <style>
+    /* ===== BASE RESET & TYPOGRAPHY ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    /* ===== BRANDED HEADER ===== */
+    .brand-header {
+      background: #2563eb;
+      color: #fff;
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+    }
+    .brand-header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-wordmark {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #fff;
+    }
+    .brand-wordmark span {
+      opacity: 0.75;
+      font-weight: 400;
+    }
+    .brand-tagline {
+      font-size: 12px;
+      opacity: 0.8;
+      border-left: 1px solid rgba(255,255,255,0.35);
+      padding-left: 16px;
+      letter-spacing: 0.02em;
+    }
+    .brand-badge {
+      margin-left: auto;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* ===== PAGE WRAPPER ===== */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ===== DOCUMENT TITLE ===== */
+    .doc-title-block {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .doc-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .doc-subtitle {
+      font-size: 15px;
+      color: #64748b;
+    }
+    .doc-meta {
+      margin-top: 12px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .doc-meta-item {
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .doc-meta-item strong {
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    /* ===== CALLOUT / INSTRUCTION BOX ===== */
+    .callout {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-left: 4px solid #2563eb;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: #1e40af;
+      line-height: 1.65;
+    }
+    .callout strong { color: #1e3a8a; }
+    .callout.tip {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      border-left-color: #16a34a;
+      color: #166534;
+    }
+    .callout.tip strong { color: #14532d; }
+    .callout.warning {
+      background: #fffbeb;
+      border-color: #fde68a;
+      border-left-color: #d97706;
+      color: #92400e;
+    }
+    .callout.warning strong { color: #78350f; }
+
+    /* ===== SHEET SECTION WRAPPERS ===== */
+    .sheet-section {
+      margin-bottom: 52px;
+    }
+    .sheet-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .sheet-badge {
+      background: #2563eb;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    .sheet-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+    .month-label {
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2563eb;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 4px 10px;
+    }
+
+    /* ===== TABLE GROUP (sub-section) ===== */
+    .table-group {
+      margin-bottom: 28px;
+    }
+    .table-group-header {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #2563eb;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-bottom: none;
+      padding: 8px 14px;
+      border-radius: 8px 8px 0 0;
+    }
+
+    /* ===== SPREADSHEET TABLE ===== */
+    .ss-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 0 0 8px 8px;
+      overflow: hidden;
+    }
+    .table-group-header + .ss-table {
+      border-top: none;
+    }
+    .ss-table th {
+      background: #1e40af;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 9px 12px;
+      text-align: left;
+      white-space: nowrap;
+      border-right: 1px solid rgba(255,255,255,0.15);
+    }
+    .ss-table th:last-child { border-right: none; }
+    .ss-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      border-right: 1px solid #e2e8f0;
+      vertical-align: middle;
+      color: #334155;
+    }
+    .ss-table td:last-child { border-right: none; }
+    .ss-table tr:last-child td { border-bottom: none; }
+    .ss-table tbody tr:nth-child(even) td { background: #f8fafc; }
+    .ss-table tbody tr:hover td { background: #f1f5f9; }
+
+    /* total row */
+    .row-total td {
+      background: #dbeafe !important;
+      font-weight: 700;
+      color: #1e3a8a !important;
+      border-top: 2px solid #93c5fd;
+    }
+    /* net / status row */
+    .row-net td {
+      background: #1e40af !important;
+      color: #fff !important;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    /* highlight / important cell */
+    .cell-highlight {
+      background: #fef9c3 !important;
+      font-weight: 600;
+      color: #854d0e !important;
+    }
+    /* positive amount */
+    .pos { color: #16a34a; font-weight: 600; }
+    /* negative amount */
+    .neg { color: #dc2626; font-weight: 600; }
+    /* neutral / formula */
+    .amt { font-variant-numeric: tabular-nums; }
+    /* over budget */
+    .over { color: #dc2626; font-weight: 600; }
+    /* on track */
+    .ok { color: #16a34a; font-weight: 600; }
+
+    /* ===== FORMULA CHIP ===== */
+    code.formula {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 11px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 2px 6px;
+      color: #7c3aed;
+      white-space: nowrap;
+    }
+    .formula-note {
+      font-size: 11px;
+      color: #64748b;
+      font-style: italic;
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* ===== CATEGORY CHIP ===== */
+    .cat-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .cat-income    { background: #dcfce7; color: #166534; }
+    .cat-housing   { background: #dbeafe; color: #1e40af; }
+    .cat-util      { background: #e0f2fe; color: #075985; }
+    .cat-sub       { background: #f3e8ff; color: #6b21a8; }
+    .cat-food      { background: #fef9c3; color: #854d0e; }
+    .cat-transport { background: #ffedd5; color: #9a3412; }
+    .cat-savings   { background: #f0fdf4; color: #166534; }
+    .cat-misc      { background: #f1f5f9; color: #475569; }
+    .cat-debt      { background: #fee2e2; color: #991b1b; }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      min-width: 60px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #2563eb;
+      border-radius: 4px;
+    }
+    .progress-fill.good { background: #16a34a; }
+    .progress-fill.warn { background: #d97706; }
+    .progress-pct {
+      font-size: 11px;
+      font-weight: 700;
+      color: #2563eb;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* ===== STRATEGY BOX ===== */
+    .strategy-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .strategy-box-header {
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .strategy-box-body {
+      background: #fff;
+      padding: 14px 18px;
+    }
+    .strategy-step {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .strategy-step:last-child { margin-bottom: 0; }
+    .step-num {
+      background: #2563eb;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-text {
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    /* ===== SUMMARY STAT CARDS ===== */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .stat-value.blue  { color: #2563eb; }
+    .stat-value.green { color: #16a34a; }
+    .stat-value.red   { color: #dc2626; }
+    .stat-value.amber { color: #d97706; }
+    .stat-sub {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    /* ===== DIVIDER ===== */
+    .sheet-divider {
+      border: none;
+      border-top: 2px dashed #e2e8f0;
+      margin: 48px 0;
+    }
+
+    /* ===== FOOTER ===== */
+    .page-footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 48px;
+    }
+    .page-footer strong { color: #2563eb; }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+      body { background: #fff; font-size: 11px; }
+      .brand-header { display: none; }
+      .page { padding: 0; max-width: 100%; }
+      .sheet-section { page-break-inside: avoid; margin-bottom: 36px; }
+      .table-group { page-break-inside: avoid; }
+      .ss-table { font-size: 10px; }
+      .ss-table th, .ss-table td { padding: 5px 8px; }
+      .ss-table th { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .row-total td { background: #e8e8e8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .row-net td { background: #333 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .callout { border: 1px solid #999; background: #f5f5f5 !important; color: #333 !important; }
+      .stat-card { box-shadow: none; border: 1px solid #ccc; }
+      .strategy-box-header { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .sheet-divider { border-top-color: #ccc; }
+      .progress-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cat-pill { border: 1px solid #ccc; background: #eee !important; color: #333 !important; }
+      code.formula { background: #eee; border: 1px solid #ccc; }
+      a { color: inherit; text-decoration: none; }
+      .page-footer { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== BRANDED HEADER ===== -->
+<header class="brand-header">
+  <div class="brand-header-inner">
+    <div class="brand-wordmark">Girl Gone AI <span>by</span> Jaci</div>
+    <div class="brand-tagline">Smart tools for your financial glow-up</div>
+    <div class="brand-badge">Free Download</div>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- ===== DOCUMENT TITLE ===== -->
+  <div class="doc-title-block">
+    <div class="doc-title">Personal Budget Tracker</div>
+    <div class="doc-subtitle">A complete spreadsheet system — monthly budget, transaction log, annual overview, and debt payoff tracker.</div>
+    <div class="doc-meta">
+      <div class="doc-meta-item">Compatible with <strong>Google Sheets</strong> &amp; <strong>Microsoft Excel</strong></div>
+      <div class="doc-meta-item">4 sheets included</div>
+      <div class="doc-meta-item">Sample data for <strong>April 2026</strong></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>How to use this template:</strong> Import this data into Google Sheets or Excel. All formulas are shown as styled code — enter them exactly as written into your spreadsheet. Replace the sample dollar amounts with your own numbers. Column letters (A, B, C…) correspond to the column positions shown in each table.
+  </div>
+
+
+  <!-- =========================================================
+       SHEET 1: MONTHLY BUDGET
+  ========================================================== -->
+  <div class="sheet-section">
+    <div class="sheet-header">
+      <div class="sheet-badge">Sheet 1</div>
+      <div class="sheet-title">Monthly Budget</div>
+      <div class="month-label">April 2026</div>
+    </div>
+
+    <!-- INCOME -->
+    <div class="table-group">
+      <div class="table-group-header">Income</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Amount</th>
+            <th>Frequency</th>
+            <th>Monthly Total</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Salary / Primary Job</td>
+            <td class="amt pos">$5,000.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B5*IF(C5="Monthly",1,IF(C5="Bi-Weekly",2.167,IF(C5="Weekly",4.333,1)))</code></td>
+            <td><span class="formula-note">Converts any frequency to monthly total</span></td>
+          </tr>
+          <tr>
+            <td>Freelance / Contract</td>
+            <td class="amt pos">$800.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B6</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Side Hustle</td>
+            <td class="amt pos">$250.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B7</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Investment Income</td>
+            <td class="amt pos">$120.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B8</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Other Income</td>
+            <td class="amt">$0.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B9</code></td>
+            <td></td>
+          </tr>
+          <tr class="row-total">
+            <td colspan="3">TOTAL MONTHLY INCOME</td>
+            <td><code class="formula">=SUM(D5:D9)</code></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FIXED EXPENSES -->
+    <div class="table-group">
+      <div class="table-group-header">Fixed Expenses</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Expense</th>
+            <th>Amount</th>
+            <th>Frequency</th>
+            <th>Monthly Total</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Rent / Mortgage</td>
+            <td class="amt neg">$1,450.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B15</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Utilities (Electric/Gas)</td>
+            <td class="amt neg">$110.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B16</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Water / Sewer</td>
+            <td class="amt neg">$45.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B17</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Internet</td>
+            <td class="amt neg">$65.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B18</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Cell Phone</td>
+            <td class="amt neg">$55.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B19</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Health Insurance</td>
+            <td class="amt neg">$220.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B20</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Car Insurance</td>
+            <td class="amt neg">$95.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B21</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Renter/Home Insurance</td>
+            <td class="amt neg">$30.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B22</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Car Payment</td>
+            <td class="amt">$0.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B23</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Student Loan</td>
+            <td class="amt neg">$250.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B24</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Other Loan Payment</td>
+            <td class="amt">$0.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B25</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Streaming Subscriptions</td>
+            <td class="amt neg">$45.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B26</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Gym / Fitness Membership</td>
+            <td class="amt neg">$35.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B27</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Other Subscriptions</td>
+            <td class="amt neg">$20.00</td>
+            <td>Monthly</td>
+            <td><code class="formula">=B28</code></td>
+            <td></td>
+          </tr>
+          <tr class="row-total">
+            <td colspan="3">TOTAL FIXED EXPENSES</td>
+            <td><code class="formula">=SUM(D15:D28)</code></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- VARIABLE EXPENSES -->
+    <div class="table-group">
+      <div class="table-group-header">Variable Expenses</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Expense</th>
+            <th>Budget</th>
+            <th>Actual Spent</th>
+            <th>Remaining</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Groceries</td>
+            <td class="amt">$400.00</td>
+            <td class="amt">$380.00</td>
+            <td class="ok">+$20.00 <code class="formula">=B33-C33</code></td>
+            <td><span class="formula-note">Formula: =Budget−Actual</span></td>
+          </tr>
+          <tr>
+            <td>Dining Out / Takeout</td>
+            <td class="amt">$150.00</td>
+            <td class="amt over">$210.00</td>
+            <td class="over">-$60.00 <code class="formula">=B34-C34</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Coffee / Cafes</td>
+            <td class="amt">$40.00</td>
+            <td class="amt over">$55.00</td>
+            <td class="over">-$15.00 <code class="formula">=B35-C35</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Entertainment</td>
+            <td class="amt">$80.00</td>
+            <td class="amt">$60.00</td>
+            <td class="ok">+$20.00 <code class="formula">=B36-C36</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Clothing / Apparel</td>
+            <td class="amt">$100.00</td>
+            <td class="amt">$0.00</td>
+            <td class="ok">+$100.00 <code class="formula">=B37-C37</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Personal Care / Grooming</td>
+            <td class="amt">$60.00</td>
+            <td class="amt">$45.00</td>
+            <td class="ok">+$15.00 <code class="formula">=B38-C38</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Gas / Fuel</td>
+            <td class="amt">$80.00</td>
+            <td class="amt over">$95.00</td>
+            <td class="over">-$15.00 <code class="formula">=B39-C39</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Public Transit / Rideshare</td>
+            <td class="amt">$30.00</td>
+            <td class="amt">$25.00</td>
+            <td class="ok">+$5.00 <code class="formula">=B40-C40</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Home Supplies</td>
+            <td class="amt">$50.00</td>
+            <td class="amt">$35.00</td>
+            <td class="ok">+$15.00 <code class="formula">=B41-C41</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Gifts / Celebrations</td>
+            <td class="amt">$50.00</td>
+            <td class="amt">$0.00</td>
+            <td class="ok">+$50.00 <code class="formula">=B42-C42</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Medical / Pharmacy</td>
+            <td class="amt">$30.00</td>
+            <td class="amt">$0.00</td>
+            <td class="ok">+$30.00 <code class="formula">=B43-C43</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Pet Care</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$0.00</td>
+            <td class="amt"><code class="formula">=B44-C44</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Kids / Education</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$0.00</td>
+            <td class="amt"><code class="formula">=B45-C45</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Miscellaneous</td>
+            <td class="amt">$50.00</td>
+            <td class="amt">$40.00</td>
+            <td class="ok">+$10.00 <code class="formula">=B46-C46</code></td>
+            <td></td>
+          </tr>
+          <tr class="row-total">
+            <td>TOTAL VARIABLE EXPENSES (Budget)</td>
+            <td colspan="2"><code class="formula">=SUM(B33:B46)</code></td>
+            <td colspan="2"><span class="formula-note">Sum of budget column</span></td>
+          </tr>
+          <tr class="row-total">
+            <td>TOTAL VARIABLE EXPENSES (Actual)</td>
+            <td colspan="2"><code class="formula">=SUM(C33:C46)</code></td>
+            <td colspan="2"><span class="formula-note">Sum of actual column</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SAVINGS GOALS -->
+    <div class="table-group">
+      <div class="table-group-header">Savings Goals</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Goal</th>
+            <th>Target Amount</th>
+            <th>Current Saved</th>
+            <th>Monthly Contribution</th>
+            <th>Months to Goal</th>
+            <th>% Complete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Emergency Fund</td>
+            <td class="amt">$10,000.00</td>
+            <td class="amt pos">$3,200.00</td>
+            <td class="amt">$300.00</td>
+            <td><code class="formula">=IF(B52-C52&gt;0,(B52-C52)/D52,0)</code></td>
+            <td>
+              <div class="progress-wrap">
+                <div class="progress-bar"><div class="progress-fill warn" style="width:32%"></div></div>
+                <div class="progress-pct">32%</div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Vacation Fund</td>
+            <td class="amt">$2,500.00</td>
+            <td class="amt pos">$800.00</td>
+            <td class="amt">$150.00</td>
+            <td><code class="formula">=IF(B53-C53&gt;0,(B53-C53)/D53,0)</code></td>
+            <td>
+              <div class="progress-wrap">
+                <div class="progress-bar"><div class="progress-fill warn" style="width:32%"></div></div>
+                <div class="progress-pct">32%</div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Retirement Contribution</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$200.00</td>
+            <td>N/A</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Down Payment Fund</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$0.00</td>
+            <td><code class="formula">=IF(B55-C55&gt;0,(B55-C55)/D55,0)</code></td>
+            <td><code class="formula">=IF(B55&gt;0,C55/B55*100,0)</code></td>
+          </tr>
+          <tr>
+            <td>Custom Goal 1:</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$0.00</td>
+            <td><code class="formula">=IF(B56-C56&gt;0,(B56-C56)/D56,0)</code></td>
+            <td><code class="formula">=IF(B56&gt;0,C56/B56*100,0)</code></td>
+          </tr>
+          <tr>
+            <td>Custom Goal 2:</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$0.00</td>
+            <td><code class="formula">=IF(B57-C57&gt;0,(B57-C57)/D57,0)</code></td>
+            <td><code class="formula">=IF(B57&gt;0,C57/B57*100,0)</code></td>
+          </tr>
+          <tr class="row-total">
+            <td colspan="3">TOTAL MONTHLY SAVINGS CONTRIBUTIONS</td>
+            <td><code class="formula">=SUM(D52:D57)</code></td>
+            <td colspan="2"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MONTHLY SUMMARY -->
+    <div class="table-group">
+      <div class="table-group-header">Monthly Summary</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Line Item</th>
+            <th>Formula / Value</th>
+            <th>Reference Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Monthly Income</td>
+            <td><code class="formula">=D11</code></td>
+            <td><span class="formula-note">Pull from income section</span></td>
+          </tr>
+          <tr>
+            <td>Total Fixed Expenses (−)</td>
+            <td><code class="formula">=D29</code></td>
+            <td><span class="formula-note">Pull from fixed expenses</span></td>
+          </tr>
+          <tr>
+            <td>Total Variable Expenses Actual (−)</td>
+            <td><code class="formula">=D49</code></td>
+            <td><span class="formula-note">Pull from variable actual</span></td>
+          </tr>
+          <tr>
+            <td>Total Savings Contributions (−)</td>
+            <td><code class="formula">=D59</code></td>
+            <td><span class="formula-note">Pull from savings goals</span></td>
+          </tr>
+          <tr class="row-total">
+            <td><strong>NET REMAINING</strong></td>
+            <td><code class="formula">=D64-D65-D66-D67</code></td>
+            <td><span class="formula-note">Income − Fixed − Variable − Savings</span></td>
+          </tr>
+          <tr>
+            <td>Savings Rate %</td>
+            <td><code class="formula">=D67/D64*100</code></td>
+            <td><span class="formula-note">Savings / Income × 100 — target 20%+</span></td>
+          </tr>
+          <tr>
+            <td>Expenses as % of Income</td>
+            <td><code class="formula">=(D65+D66)/D64*100</code></td>
+            <td><span class="formula-note">Total expenses / income × 100</span></td>
+          </tr>
+          <tr class="row-net">
+            <td><strong>STATUS</strong></td>
+            <td colspan="2"><code class="formula" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);color:#fff">=IF(D70&gt;=0,"ON TRACK - You have surplus","OVER BUDGET - Review spending")</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout tip">
+      <strong>Pro tip:</strong> Aim for the 50/30/20 rule — 50% on needs (fixed + essential variable), 30% on wants (dining, entertainment, clothing), and 20% on savings and debt payoff. Use the Savings Rate % and Expenses % cells to track your ratio each month.
+    </div>
+  </div>
+
+  <hr class="sheet-divider" />
+
+  <!-- =========================================================
+       SHEET 2: TRANSACTION LOG
+  ========================================================== -->
+  <div class="sheet-section">
+    <div class="sheet-header">
+      <div class="sheet-badge">Sheet 2</div>
+      <div class="sheet-title">Transaction Log</div>
+    </div>
+
+    <div class="callout">
+      <strong>Instructions:</strong> Log every transaction. Use the Category Dropdown list below to keep your data consistent. The Running Balance column uses a formula that chains each row — enter <code class="formula">=H[prev row]+E[this row]</code> and copy it down as you add new rows.
+    </div>
+
+    <!-- CATEGORY REFERENCE -->
+    <div class="table-group">
+      <div class="table-group-header">Category Reference — Use These for Data Validation Dropdowns</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Income Categories</th>
+            <th>Housing &amp; Bills</th>
+            <th>Food &amp; Lifestyle</th>
+            <th>Transportation</th>
+            <th>Other</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="cat-pill cat-income">Income</span></td>
+            <td><span class="cat-pill cat-housing">Housing</span></td>
+            <td><span class="cat-pill cat-food">Groceries</span></td>
+            <td><span class="cat-pill cat-transport">Gas / Fuel</span></td>
+            <td><span class="cat-pill cat-savings">Savings Transfer</span></td>
+          </tr>
+          <tr>
+            <td><span class="cat-pill cat-income">Salary</span></td>
+            <td><span class="cat-pill cat-util">Utilities</span></td>
+            <td><span class="cat-pill cat-food">Dining Out</span></td>
+            <td><span class="cat-pill cat-transport">Transportation</span></td>
+            <td><span class="cat-pill cat-debt">Loan / Debt</span></td>
+          </tr>
+          <tr>
+            <td><span class="cat-pill cat-income">Freelance</span></td>
+            <td><span class="cat-pill cat-util">Insurance</span></td>
+            <td><span class="cat-pill cat-food">Coffee</span></td>
+            <td></td>
+            <td><span class="cat-pill cat-misc">Home Supplies</span></td>
+          </tr>
+          <tr>
+            <td><span class="cat-pill cat-income">Investment</span></td>
+            <td><span class="cat-pill cat-sub">Subscriptions</span></td>
+            <td><span class="cat-pill cat-misc">Entertainment</span></td>
+            <td></td>
+            <td><span class="cat-pill cat-misc">Gifts</span></td>
+          </tr>
+          <tr>
+            <td><span class="cat-pill cat-income">Other Income</span></td>
+            <td></td>
+            <td><span class="cat-pill cat-misc">Clothing</span></td>
+            <td></td>
+            <td><span class="cat-pill cat-misc">Medical</span></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td><span class="cat-pill cat-misc">Personal Care</span></td>
+            <td></td>
+            <td><span class="cat-pill cat-misc">Pet Care</span></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><span class="cat-pill cat-misc">Kids / Education</span></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><span class="cat-pill cat-misc">Miscellaneous</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TRANSACTION LOG -->
+    <div class="table-group">
+      <div class="table-group-header">Transaction Log — April 2026</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Payment Method</th>
+            <th>Notes</th>
+            <th>Running Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026-04-01</td>
+            <td><em>Opening Balance</em></td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td class="cell-highlight amt">$0.00</td>
+          </tr>
+          <tr>
+            <td>2026-04-01</td>
+            <td>Paycheck Deposit</td>
+            <td><span class="cat-pill cat-income">Salary</span></td>
+            <td class="pos amt">+$5,000.00</td>
+            <td>Direct Deposit</td>
+            <td>April 15 paycheck</td>
+            <td><code class="formula">=H31+E32</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-01</td>
+            <td>Rent Payment</td>
+            <td><span class="cat-pill cat-housing">Housing</span></td>
+            <td class="neg amt">-$1,450.00</td>
+            <td>ACH Auto-Pay</td>
+            <td>April rent</td>
+            <td><code class="formula">=H32+E33</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-01</td>
+            <td>Groceries — Trader Joe's</td>
+            <td><span class="cat-pill cat-food">Groceries</span></td>
+            <td class="neg amt">-$87.42</td>
+            <td>Debit Card</td>
+            <td>Weekly grocery run</td>
+            <td><code class="formula">=H33+E34</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-02</td>
+            <td>Netflix Subscription</td>
+            <td><span class="cat-pill cat-sub">Subscriptions</span></td>
+            <td class="neg amt">-$15.99</td>
+            <td>Credit Card</td>
+            <td>Monthly auto-charge</td>
+            <td><code class="formula">=H34+E35</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-02</td>
+            <td>Coffee — Local Cafe</td>
+            <td><span class="cat-pill cat-food">Coffee</span></td>
+            <td class="neg amt">-$6.50</td>
+            <td>Credit Card</td>
+            <td></td>
+            <td><code class="formula">=H35+E36</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-03</td>
+            <td>Gas Fill-up</td>
+            <td><span class="cat-pill cat-transport">Gas / Fuel</span></td>
+            <td class="neg amt">-$48.30</td>
+            <td>Credit Card</td>
+            <td>Full tank</td>
+            <td><code class="formula">=H36+E37</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-04</td>
+            <td>Dinner Out</td>
+            <td><span class="cat-pill cat-food">Dining Out</span></td>
+            <td class="neg amt">-$42.00</td>
+            <td>Credit Card</td>
+            <td>Friday dinner w/ partner</td>
+            <td><code class="formula">=H37+E38</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-05</td>
+            <td>Gym Membership</td>
+            <td><span class="cat-pill cat-sub">Subscriptions</span></td>
+            <td class="neg amt">-$35.00</td>
+            <td>ACH Auto-Pay</td>
+            <td>Monthly fee</td>
+            <td><code class="formula">=H38+E39</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-07</td>
+            <td>Freelance Invoice Paid</td>
+            <td><span class="cat-pill cat-income">Freelance</span></td>
+            <td class="pos amt">+$800.00</td>
+            <td>ACH Transfer</td>
+            <td>Client XYZ project</td>
+            <td><code class="formula">=H39+E40</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-07</td>
+            <td>Electric Bill</td>
+            <td><span class="cat-pill cat-util">Utilities</span></td>
+            <td class="neg amt">-$110.00</td>
+            <td>ACH Auto-Pay</td>
+            <td>April bill</td>
+            <td><code class="formula">=H40+E41</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-08</td>
+            <td>Grocery Run</td>
+            <td><span class="cat-pill cat-food">Groceries</span></td>
+            <td class="neg amt">-$62.15</td>
+            <td>Debit Card</td>
+            <td>Costco run</td>
+            <td><code class="formula">=H41+E42</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-10</td>
+            <td>Emergency Fund Transfer</td>
+            <td><span class="cat-pill cat-savings">Savings Transfer</span></td>
+            <td class="neg amt">-$300.00</td>
+            <td>ACH Transfer</td>
+            <td>Monthly savings goal</td>
+            <td><code class="formula">=H42+E43</code></td>
+          </tr>
+          <tr>
+            <td>2026-04-10</td>
+            <td>Vacation Fund Transfer</td>
+            <td><span class="cat-pill cat-savings">Savings Transfer</span></td>
+            <td class="neg amt">-$150.00</td>
+            <td>ACH Transfer</td>
+            <td>Monthly savings goal</td>
+            <td><code class="formula">=H43+E44</code></td>
+          </tr>
+          <tr style="background:#f8fafc;">
+            <td colspan="7" style="color:#94a3b8;font-style:italic;font-size:12px;">
+              Add new rows below — copy the Running Balance formula down
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MONTHLY TOTALS -->
+    <div class="table-group">
+      <div class="table-group-header">Monthly Totals</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Formula</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Income This Month</td>
+            <td><code class="formula">=SUMIF(C:C,"Income",E:E)+SUMIF(C:C,"Salary",E:E)+SUMIF(C:C,"Freelance",E:E)+SUMIF(C:C,"Investment",E:E)</code></td>
+          </tr>
+          <tr>
+            <td>Total Expenses This Month</td>
+            <td><code class="formula">=SUMIF(E:E,"&lt;0",E:E)</code></td>
+          </tr>
+          <tr>
+            <td>Net This Month</td>
+            <td><code class="formula">=C50+C51</code></td>
+          </tr>
+          <tr>
+            <td>Number of Transactions</td>
+            <td><code class="formula">=COUNTA(A32:A200)-COUNTBLANK(A32:A200)</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr class="sheet-divider" />
+
+  <!-- =========================================================
+       SHEET 3: ANNUAL OVERVIEW
+  ========================================================== -->
+  <div class="sheet-section">
+    <div class="sheet-header">
+      <div class="sheet-badge">Sheet 3</div>
+      <div class="sheet-title">Annual Overview — 2026</div>
+    </div>
+
+    <!-- MONTHLY INCOME VS EXPENSES -->
+    <div class="table-group">
+      <div class="table-group-header">Monthly Income vs. Expenses</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Income</th>
+            <th>Fixed Expenses</th>
+            <th>Variable Expenses</th>
+            <th>Savings</th>
+            <th>Net</th>
+            <th>Savings Rate %</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>January</strong></td>
+            <td class="pos amt">$5,800.00</td>
+            <td class="neg amt">$2,420.00</td>
+            <td class="neg amt">$980.00</td>
+            <td class="amt">$650.00</td>
+            <td><code class="formula">=B6-C6-D6-E6</code></td>
+            <td><code class="formula">=F6/B6*100</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>February</strong></td>
+            <td class="pos amt">$5,200.00</td>
+            <td class="neg amt">$2,420.00</td>
+            <td class="neg amt">$750.00</td>
+            <td class="amt">$650.00</td>
+            <td><code class="formula">=B7-C7-D7-E7</code></td>
+            <td><code class="formula">=F7/B7*100</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>March</strong></td>
+            <td class="pos amt">$5,950.00</td>
+            <td class="neg amt">$2,420.00</td>
+            <td class="neg amt">$1,100.00</td>
+            <td class="amt">$650.00</td>
+            <td><code class="formula">=B8-C8-D8-E8</code></td>
+            <td><code class="formula">=F8/B8*100</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>April</strong></td>
+            <td class="pos amt">$6,050.00</td>
+            <td class="neg amt">$2,420.00</td>
+            <td class="neg amt">$905.00</td>
+            <td class="amt">$650.00</td>
+            <td><code class="formula">=B9-C9-D9-E9</code></td>
+            <td><code class="formula">=F9/B9*100</code></td>
+            <td></td>
+          </tr>
+          <tr style="color:#94a3b8;font-style:italic;">
+            <td>May</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td></td>
+          </tr>
+          <tr style="color:#94a3b8;font-style:italic;">
+            <td>June</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td></td>
+          </tr>
+          <tr style="color:#94a3b8;font-style:italic;">
+            <td>July</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td></td>
+          </tr>
+          <tr style="color:#94a3b8;font-style:italic;">
+            <td>August</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td></td>
+          </tr>
+          <tr style="color:#94a3b8;font-style:italic;">
+            <td>September</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td></td>
+          </tr>
+          <tr style="color:#94a3b8;font-style:italic;">
+            <td>October</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td></td>
+          </tr>
+          <tr style="color:#94a3b8;font-style:italic;">
+            <td>November</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td></td>
+          </tr>
+          <tr style="color:#94a3b8;font-style:italic;">
+            <td>December</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td></td>
+          </tr>
+          <tr class="row-total">
+            <td><strong>Year-to-Date Totals</strong></td>
+            <td><code class="formula">=SUM(B6:B17)</code></td>
+            <td><code class="formula">=SUM(C6:C17)</code></td>
+            <td><code class="formula">=SUM(D6:D17)</code></td>
+            <td><code class="formula">=SUM(E6:E17)</code></td>
+            <td><code class="formula">=SUM(F6:F17)</code></td>
+            <td><code class="formula">=AVERAGE(G6:G17)</code></td>
+            <td></td>
+          </tr>
+          <tr class="row-total">
+            <td><strong>Monthly Average</strong></td>
+            <td><code class="formula">=AVERAGE(B6:B17)</code></td>
+            <td><code class="formula">=AVERAGE(C6:C17)</code></td>
+            <td><code class="formula">=AVERAGE(D6:D17)</code></td>
+            <td><code class="formula">=AVERAGE(E6:E17)</code></td>
+            <td><code class="formula">=AVERAGE(F6:F17)</code></td>
+            <td>—</td>
+            <td></td>
+          </tr>
+          <tr class="row-total">
+            <td><strong>Projected Annual</strong></td>
+            <td><code class="formula">=B21*12</code></td>
+            <td><code class="formula">=C21*12</code></td>
+            <td><code class="formula">=D21*12</code></td>
+            <td><code class="formula">=E21*12</code></td>
+            <td><code class="formula">=F21*12</code></td>
+            <td>—</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CATEGORY SPENDING BY MONTH -->
+    <div class="table-group">
+      <div class="table-group-header">Category Spending by Month</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Jan</th>
+            <th>Feb</th>
+            <th>Mar</th>
+            <th>Apr</th>
+            <th>May</th>
+            <th>Jun</th>
+            <th>Jul</th>
+            <th>Aug</th>
+            <th>Sep</th>
+            <th>Oct</th>
+            <th>Nov</th>
+            <th>Dec</th>
+            <th>Annual Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Housing / Rent</td>
+            <td class="amt">$1,450</td><td class="amt">$1,450</td><td class="amt">$1,450</td><td class="amt">$1,450</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B28:M28)</code></td>
+          </tr>
+          <tr>
+            <td>Utilities</td>
+            <td class="amt">$155</td><td class="amt">$140</td><td class="amt">$160</td><td class="amt">$155</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B29:M29)</code></td>
+          </tr>
+          <tr>
+            <td>Insurance</td>
+            <td class="amt">$345</td><td class="amt">$345</td><td class="amt">$345</td><td class="amt">$345</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B30:M30)</code></td>
+          </tr>
+          <tr>
+            <td>Subscriptions</td>
+            <td class="amt">$100</td><td class="amt">$100</td><td class="amt">$100</td><td class="amt">$100</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B31:M31)</code></td>
+          </tr>
+          <tr>
+            <td>Loan Payments</td>
+            <td class="amt">$250</td><td class="amt">$250</td><td class="amt">$250</td><td class="amt">$250</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B32:M32)</code></td>
+          </tr>
+          <tr>
+            <td>Groceries</td>
+            <td class="amt">$360</td><td class="amt">$310</td><td class="amt">$390</td><td class="amt">$380</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B33:M33)</code></td>
+          </tr>
+          <tr>
+            <td>Dining Out</td>
+            <td class="amt">$180</td><td class="amt">$150</td><td class="amt">$220</td><td class="amt">$210</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B34:M34)</code></td>
+          </tr>
+          <tr>
+            <td>Entertainment</td>
+            <td class="amt">$90</td><td class="amt">$70</td><td class="amt">$80</td><td class="amt">$60</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B35:M35)</code></td>
+          </tr>
+          <tr>
+            <td>Clothing</td>
+            <td class="amt">$0</td><td class="amt">$120</td><td class="amt">$0</td><td class="amt">$0</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B36:M36)</code></td>
+          </tr>
+          <tr>
+            <td>Transportation</td>
+            <td class="amt">$95</td><td class="amt">$80</td><td class="amt">$110</td><td class="amt">$95</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B37:M37)</code></td>
+          </tr>
+          <tr>
+            <td>Medical</td>
+            <td class="amt">$30</td><td class="amt">$0</td><td class="amt">$60</td><td class="amt">$0</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B38:M38)</code></td>
+          </tr>
+          <tr>
+            <td>Miscellaneous</td>
+            <td class="amt">$50</td><td class="amt">$80</td><td class="amt">$40</td><td class="amt">$50</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td><td style="color:#cbd5e1">—</td>
+            <td><code class="formula">=SUM(B39:M39)</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHART DATA -->
+    <div class="table-group">
+      <div class="table-group-header">Chart Data — Income vs. Expenses Trend (use this range to create a Line Chart)</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Income</th>
+            <th>Total Expenses</th>
+            <th>Savings</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>January</td><td><code class="formula">=Annual_Overview!B6</code></td><td><code class="formula">=Annual_Overview!C6+Annual_Overview!D6</code></td><td><code class="formula">=Annual_Overview!E6</code></td></tr>
+          <tr><td>February</td><td><code class="formula">=Annual_Overview!B7</code></td><td><code class="formula">=Annual_Overview!C7+Annual_Overview!D7</code></td><td><code class="formula">=Annual_Overview!E7</code></td></tr>
+          <tr><td>March</td><td><code class="formula">=Annual_Overview!B8</code></td><td><code class="formula">=Annual_Overview!C8+Annual_Overview!D8</code></td><td><code class="formula">=Annual_Overview!E8</code></td></tr>
+          <tr><td>April</td><td><code class="formula">=Annual_Overview!B9</code></td><td><code class="formula">=Annual_Overview!C9+Annual_Overview!D9</code></td><td><code class="formula">=Annual_Overview!E9</code></td></tr>
+          <tr><td>May</td><td><code class="formula">=Annual_Overview!B10</code></td><td><code class="formula">=Annual_Overview!C10+Annual_Overview!D10</code></td><td><code class="formula">=Annual_Overview!E10</code></td></tr>
+          <tr><td>June</td><td><code class="formula">=Annual_Overview!B11</code></td><td><code class="formula">=Annual_Overview!C11+Annual_Overview!D11</code></td><td><code class="formula">=Annual_Overview!E11</code></td></tr>
+          <tr><td>July</td><td><code class="formula">=Annual_Overview!B12</code></td><td><code class="formula">=Annual_Overview!C12+Annual_Overview!D12</code></td><td><code class="formula">=Annual_Overview!E12</code></td></tr>
+          <tr><td>August</td><td><code class="formula">=Annual_Overview!B13</code></td><td><code class="formula">=Annual_Overview!C13+Annual_Overview!D13</code></td><td><code class="formula">=Annual_Overview!E13</code></td></tr>
+          <tr><td>September</td><td><code class="formula">=Annual_Overview!B14</code></td><td><code class="formula">=Annual_Overview!C14+Annual_Overview!D14</code></td><td><code class="formula">=Annual_Overview!E14</code></td></tr>
+          <tr><td>October</td><td><code class="formula">=Annual_Overview!B15</code></td><td><code class="formula">=Annual_Overview!C15+Annual_Overview!D15</code></td><td><code class="formula">=Annual_Overview!E15</code></td></tr>
+          <tr><td>November</td><td><code class="formula">=Annual_Overview!B16</code></td><td><code class="formula">=Annual_Overview!C16+Annual_Overview!D16</code></td><td><code class="formula">=Annual_Overview!E16</code></td></tr>
+          <tr><td>December</td><td><code class="formula">=Annual_Overview!B17</code></td><td><code class="formula">=Annual_Overview!C17+Annual_Overview!D17</code></td><td><code class="formula">=Annual_Overview!E17</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr class="sheet-divider" />
+
+  <!-- =========================================================
+       SHEET 4: DEBT PAYOFF TRACKER
+  ========================================================== -->
+  <div class="sheet-section">
+    <div class="sheet-header">
+      <div class="sheet-badge">Sheet 4</div>
+      <div class="sheet-title">Debt Payoff Tracker</div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Debt</div>
+        <div class="stat-value red">$24,650</div>
+        <div class="stat-sub">Across 5 accounts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Min. Monthly Payments</div>
+        <div class="stat-value amber">$570</div>
+        <div class="stat-sub">All debts combined</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Extra Payment</div>
+        <div class="stat-value blue">+$100</div>
+        <div class="stat-sub">Applied to priority debt</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Highest APR</div>
+        <div class="stat-value red">22.99%</div>
+        <div class="stat-sub">Credit Card A — tackle first (avalanche)</div>
+      </div>
+    </div>
+
+    <!-- DEBT INVENTORY -->
+    <div class="table-group">
+      <div class="table-group-header">Debt Inventory</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Debt Name</th>
+            <th>Current Balance</th>
+            <th>APR</th>
+            <th>Min. Payment</th>
+            <th>Extra Payment</th>
+            <th>Total Monthly</th>
+            <th>Payoff Date (Est.)</th>
+            <th>Total Interest Remaining</th>
+            <th>Snowball Priority</th>
+            <th>Avalanche Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Credit Card A</strong></td>
+            <td class="neg amt">$2,400.00</td>
+            <td class="neg">22.99%</td>
+            <td class="amt">$60.00</td>
+            <td class="pos amt">$100.00</td>
+            <td><code class="formula">=D5+E5</code></td>
+            <td><code class="formula" style="font-size:10px">=TEXT(EDATE(TODAY(),NPER(C5/12,-F5,B5)),"MMM YYYY")</code></td>
+            <td><code class="formula" style="font-size:10px">=B5*(C5/12/(1-(1+C5/12)^(-NPER(C5/12,-F5,B5))))-B5</code></td>
+            <td><span class="cat-pill cat-debt">1 — Lowest Balance</span></td>
+            <td><span class="cat-pill" style="background:#fee2e2;color:#7f1d1d;">2</span></td>
+          </tr>
+          <tr>
+            <td><strong>Credit Card B</strong></td>
+            <td class="neg amt">$1,100.00</td>
+            <td class="neg">19.99%</td>
+            <td class="amt">$30.00</td>
+            <td class="amt">$0.00</td>
+            <td><code class="formula">=D6+E6</code></td>
+            <td><code class="formula" style="font-size:10px">=TEXT(EDATE(TODAY(),NPER(C6/12,-F6,B6)),"MMM YYYY")</code></td>
+            <td><code class="formula" style="font-size:10px">=B6*(C6/12/(1-(1+C6/12)^(-NPER(C6/12,-F6,B6))))-B6</code></td>
+            <td><span class="cat-pill cat-debt">2</span></td>
+            <td><span class="cat-pill" style="background:#fee2e2;color:#7f1d1d;">3</span></td>
+          </tr>
+          <tr>
+            <td><strong>Student Loan</strong></td>
+            <td class="neg amt">$8,500.00</td>
+            <td>6.50%</td>
+            <td class="amt">$150.00</td>
+            <td class="amt">$0.00</td>
+            <td><code class="formula">=D7+E7</code></td>
+            <td><code class="formula" style="font-size:10px">=TEXT(EDATE(TODAY(),NPER(C7/12,-F7,B7)),"MMM YYYY")</code></td>
+            <td><code class="formula" style="font-size:10px">=B7*(C7/12/(1-(1+C7/12)^(-NPER(C7/12,-F7,B7))))-B7</code></td>
+            <td><span class="cat-pill cat-debt">3 — Highest Balance</span></td>
+            <td><span class="cat-pill" style="background:#fee2e2;color:#7f1d1d;">4</span></td>
+          </tr>
+          <tr>
+            <td><strong>Car Loan</strong></td>
+            <td class="neg amt">$12,000.00</td>
+            <td>7.25%</td>
+            <td class="amt">$280.00</td>
+            <td class="amt">$0.00</td>
+            <td><code class="formula">=D8+E8</code></td>
+            <td><code class="formula" style="font-size:10px">=TEXT(EDATE(TODAY(),NPER(C8/12,-F8,B8)),"MMM YYYY")</code></td>
+            <td><code class="formula" style="font-size:10px">=B8*(C8/12/(1-(1+C8/12)^(-NPER(C8/12,-F8,B8))))-B8</code></td>
+            <td><span class="cat-pill cat-debt">4</span></td>
+            <td><span class="cat-pill cat-debt">1 — Highest Rate</span></td>
+          </tr>
+          <tr>
+            <td><strong>Medical Bill</strong></td>
+            <td class="neg amt">$650.00</td>
+            <td>0.00%</td>
+            <td class="amt">$50.00</td>
+            <td class="amt">$0.00</td>
+            <td><code class="formula">=D9+E9</code></td>
+            <td>N/A</td>
+            <td class="amt">$0.00</td>
+            <td><span class="cat-pill" style="background:#f1f5f9;color:#475569;">5</span></td>
+            <td><span class="cat-pill" style="background:#f1f5f9;color:#475569;">5</span></td>
+          </tr>
+          <tr>
+            <td><strong>Personal Loan</strong></td>
+            <td class="amt">$0.00</td>
+            <td>0.00%</td>
+            <td class="amt">$0.00</td>
+            <td class="amt">$0.00</td>
+            <td><code class="formula">=D10+E10</code></td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+          <tr class="row-total">
+            <td><strong>TOTALS</strong></td>
+            <td><code class="formula">=SUM(B5:B10)</code></td>
+            <td>—</td>
+            <td><code class="formula">=SUM(D5:D10)</code></td>
+            <td><code class="formula">=SUM(E5:E10)</code></td>
+            <td><code class="formula">=SUM(F5:F10)</code></td>
+            <td>—</td>
+            <td><code class="formula">=SUM(H5:H10)</code></td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- STRATEGY COMPARISON -->
+    <div class="table-group">
+      <div class="table-group-header">Debt Payoff Strategy Comparison</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:4px 0 16px;">
+        <div class="strategy-box">
+          <div class="strategy-box-header">Debt Snowball Method — Pay Smallest Balance First</div>
+          <div class="strategy-box-body">
+            <p style="font-size:12px;color:#64748b;margin-bottom:14px;line-height:1.5;"><em>Why it works: Quick psychological wins keep you motivated. Eliminate Credit Card B first — then roll that payment into Credit Card A.</em></p>
+            <div class="strategy-step">
+              <div class="step-num">1</div>
+              <div class="step-text">Pay minimums on <strong>all</strong> debts</div>
+            </div>
+            <div class="strategy-step">
+              <div class="step-num">2</div>
+              <div class="step-text">Put ALL extra money toward <strong>Credit Card B</strong> ($1,100 — lowest balance)</div>
+            </div>
+            <div class="strategy-step">
+              <div class="step-num">3</div>
+              <div class="step-text">When Credit Card B is paid off — add its payment to <strong>Credit Card A</strong></div>
+            </div>
+            <div class="strategy-step">
+              <div class="step-num">4</div>
+              <div class="step-text">Continue rolling payments until all debts are cleared</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="strategy-box">
+          <div class="strategy-box-header" style="background:#1e3a8a;">Debt Avalanche Method — Pay Highest Interest First</div>
+          <div class="strategy-box-body">
+            <p style="font-size:12px;color:#64748b;margin-bottom:14px;line-height:1.5;"><em>Why it works: Mathematically optimal — saves the most money in interest charges.</em></p>
+            <div class="strategy-step">
+              <div class="step-num" style="background:#1e3a8a;">1</div>
+              <div class="step-text">Pay minimums on <strong>all</strong> debts</div>
+            </div>
+            <div class="strategy-step">
+              <div class="step-num" style="background:#1e3a8a;">2</div>
+              <div class="step-text">Put ALL extra money toward <strong>Credit Card A</strong> (22.99% APR — highest rate)</div>
+            </div>
+            <div class="strategy-step">
+              <div class="step-num" style="background:#1e3a8a;">3</div>
+              <div class="step-text">When Credit Card A is paid off — move to <strong>Credit Card B</strong> (19.99% APR)</div>
+            </div>
+            <div class="strategy-step">
+              <div class="step-num" style="background:#1e3a8a;">4</div>
+              <div class="step-text">Continue in interest-rate order until debt-free</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTEREST SAVINGS CALCULATOR -->
+    <div class="table-group">
+      <div class="table-group-header">Interest Savings Calculator</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Value / Formula</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Debt Balance</td>
+            <td><code class="formula">=SUM(B5:B10)</code></td>
+          </tr>
+          <tr>
+            <td>Total Minimum Payments</td>
+            <td><code class="formula">=SUM(D5:D10)</code></td>
+          </tr>
+          <tr>
+            <td>Current Extra Payment Per Month</td>
+            <td class="pos amt">$100.00</td>
+          </tr>
+          <tr>
+            <td>Estimated Total Interest (minimum payments only)</td>
+            <td><code class="formula">=SUM(H5:H10)</code></td>
+          </tr>
+          <tr>
+            <td>With $100/month extra (Avalanche)</td>
+            <td style="color:#64748b;font-style:italic;">Savings depend on application order — use an online debt payoff calculator for precise figures</td>
+          </tr>
+          <tr class="row-total">
+            <td><strong>Debt-Free Target Date</strong></td>
+            <td class="cell-highlight">Type your goal date here: _______________</td>
+          </tr>
+          <tr>
+            <td>Monthly Payment Needed to Hit Target</td>
+            <td><code class="formula">=PMT(rate/12, months, -balance)</code> <span class="formula-note">Apply per debt</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MONTHLY DEBT PAYMENT TRACKER -->
+    <div class="table-group">
+      <div class="table-group-header">Monthly Debt Payment Tracker</div>
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Credit Card A</th>
+            <th>Credit Card B</th>
+            <th>Student Loan</th>
+            <th>Car Loan</th>
+            <th>Medical Bill</th>
+            <th>Total Paid</th>
+            <th>Remaining Balance</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>January 2026</strong></td>
+            <td class="amt">$160.00</td>
+            <td class="amt">$30.00</td>
+            <td class="amt">$150.00</td>
+            <td class="amt">$280.00</td>
+            <td class="amt">$50.00</td>
+            <td><code class="formula">=SUM(B39:F39)</code></td>
+            <td class="cell-highlight amt">$24,650.00</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>February 2026</strong></td>
+            <td class="amt">$160.00</td>
+            <td class="amt">$30.00</td>
+            <td class="amt">$150.00</td>
+            <td class="amt">$280.00</td>
+            <td class="amt">$50.00</td>
+            <td><code class="formula">=SUM(B40:F40)</code></td>
+            <td><code class="formula">=H39-G40</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>March 2026</strong></td>
+            <td class="amt">$160.00</td>
+            <td class="amt">$30.00</td>
+            <td class="amt">$150.00</td>
+            <td class="amt">$280.00</td>
+            <td class="amt">$50.00</td>
+            <td><code class="formula">=SUM(B41:F41)</code></td>
+            <td><code class="formula">=H40-G41</code></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>April 2026</strong></td>
+            <td class="amt">$160.00</td>
+            <td class="amt">$30.00</td>
+            <td class="amt">$150.00</td>
+            <td class="amt">$280.00</td>
+            <td class="amt">$50.00</td>
+            <td><code class="formula">=SUM(B42:F42)</code></td>
+            <td><code class="formula">=H41-G42</code></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warning">
+      <strong>Remember:</strong> The Payoff Date and Total Interest formulas (NPER, EDATE) require the interest rate column to be entered as a decimal — e.g., type <code class="formula">0.2299</code> for 22.99%, not the percentage symbol. Some spreadsheet apps auto-convert; verify your cell format before relying on these calculations.
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="page-footer">
+    <strong>Girl Gone AI</strong> &nbsp;|&nbsp; Personal Budget Tracker &nbsp;|&nbsp; Free download at girlgoneai.com<br />
+    For personal use only. Not financial advice. &copy; 2026 Girl Gone AI.
+  </footer>
+
+</div>
+</body>
+</html>
