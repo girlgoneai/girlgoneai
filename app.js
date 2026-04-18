@@ -16,7 +16,7 @@
       var desc = (card.querySelector('.product-desc') || {}).textContent || '';
       var text = (title + ' ' + desc + ' ' + cat).toLowerCase();
       var matchCat = activeCategory === 'all' || cat === activeCategory;
-      var matchSearch = !query || text.indexOf(query) !== -1;
+      var matchSearch = !query || query.split(/\s+/).every(function(w) { return text.indexOf(w) !== -1; });
       if (matchCat && matchSearch) {
         card.style.display = '';
         visible++;

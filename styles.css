@@ -710,3 +710,14 @@ body {
   .product-grid { grid-template-columns: 1fr; }
   .container { padding: 0 16px; }
 }
+
+/* FAQ Section */
+.faq-section { padding: 60px 0; background: var(--surface); border-top: 1px solid var(--border); }
+.faq-section h2 { text-align: center; font-size: 1.8rem; margin-bottom: 32px; }
+.faq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+.faq-item { padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); }
+.faq-item h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.faq-item p { font-size: 0.9rem; line-height: 1.6; color: var(--text-muted); }
+.faq-item a { color: var(--accent); text-decoration: none; }
+.faq-item a:hover { text-decoration: underline; }
+@media (max-width: 480px) { .faq-grid { grid-template-columns: 1fr; } }
